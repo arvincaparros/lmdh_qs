@@ -1,0 +1,297 @@
+﻿@using Azure.Core
+@using LMDH_QS.ViewModel
+@model DoctorDashboardViewModel
+
+@{
+    ViewData["Title"] = "Doctor Dashboard";
+}
+
+<div class="container-fluid py-4">
+
+    <h2 class="mb-4 text-primary fw-bold text-center">Doctor's Patient Monitoring</h2>
+
+    <!-- Current Day Queue -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-success text-white fw-semibold">
+            <i class="bi bi-clock-history me-2"></i> Today's Patient Queue Status
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover text-center align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Department</th>
+                        <th>Ticket No</th>
+                        <th>Patient Name</th>
+                        <th>Check-in Time</th>
+                        <th>Status</th>
+                        <th>Add Diagnosis & Prescriptions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var q in Model.TodayQueue)
+                    {
+                        <tr class="@(q.Status switch {
+                            "Serving" => "bg-warning bg-opacity-25",
+                            "Done" => "bg-info bg-opacity-25",
+                            "Standby" => "bg-success bg-opacity-25",
+                            "Skipped" => "bg-danger bg-opacity-25",
+                            _ => ""
+                        })">
+                            <td>@q.Department</td>
+                            <td><strong>@($"{q.DeptCode}{q.QueueNumber:D3}")</strong></td>
+                            <td>@q.PatientName</td>
+                            <td>@q.VisitTime.ToString(@"hh\:mm")</td>
+                            <td><span class="badge bg-@(q.Status.ToLower())">@q.Status</span></td>
+                             <td>
+                                <button class="btn btn-outline-primary btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#diagnosisModal" 
+                                        data-id="@q.PatientIdentification" 
+                                        data-name="@q.PatientName"
+                                        data-visit-date="@q.VisitDate.ToString("yyyy-MM-dd")">
+                                    Add Note
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Patient Records Backtracking -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-archive me-2"></i> Backtrack Patient Records
+        </div>
+        <div class="card-body">
+           <form method="get" class="row g-3 mb-3">
+            <div class="col-md-6">
+                <input type="text" name="search" class="form-control" 
+                       value="@Context.Request.Query["search"].ToString()"
+                       placeholder="Search by Name, Ticket No, or Dept..." />
+            </div>
+            <div class="col-md-4">
+                <input type="date" name="date" class="form-control" 
+                       value="@Context.Request.Query["date"].ToString()" />
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+            </div>
+        </form>
+
+
+            <table class="table table-bordered table-striped text-center align-middle">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Department</th>
+                        <th>Ticket</th>
+                        <th>Patient</th>
+                        <th>Status</th>
+                        <th>Doctor's Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var record in Model.History)
+                    {
+                        <tr>
+                            <td>@record.VisitDate.ToString("MMM dd, yyyy")</td>
+                            <td>@record.Department</td>
+                            <td>@($"{record.DeptCode}{record.QueueNumber:D3}")</td>
+                            <td>@record.PatientName</td>
+                            <td>@record.Status</td>
+                             <td>
+                                <button class="btn btn-sm btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#viewDiagnosisModal"
+                                        data-id="@record.PatientIdentification" 
+                                        data-visitdate="@record.VisitDate.ToString("yyyy-MM-dd")">
+                                     <i class="bi bi-eye"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Diagnosis & Prescription Modal -->
+<div class="modal fade" id="diagnosisModal" tabindex="-1" aria-labelledby="diagnosisModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+        <form id="diagnosisForm" method="post" asp-action="SaveDoctorNote">
+
+            <input type="hidden" id="PatientId" name="PatientIdentification" />
+            <input type="hidden" id="VisitDate" name="VisitDate" />
+            <input type="hidden" id="HiddenPatientName" name="PatientName" />
+
+            <div class="modal-header">
+                <h5 class="modal-title">Diagnosis & Prescriptions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Patient Name</label>
+                        <input type="text" id="PatientName" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Visit Date</label>
+                        <input type="text" id="VisitDateDisplay" class="form-control" disabled />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Diagnosis</label>
+                    <textarea class="form-control" name="Diagnosis" rows="3" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Prescriptions</label>
+                    <textarea class="form-control" name="Prescription" rows="3" required></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- View Diagnosis Modal -->
+<div class="modal fade" id="viewDiagnosisModal" tabindex="-1" aria-labelledby="viewDiagnosisLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewDiagnosisLabel">Doctor's Notes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Patient Name</label>
+                <input type="text" id="ViewPatientName" class="form-control" disabled />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Visit Date</label>
+                <input type="text" id="ViewVisitDate" class="form-control" disabled />
+            </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Diagnosis</label>
+          <textarea id="viewDiagnosis" class="form-control" rows="3" disabled></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Prescriptions</label>
+          <textarea id="viewPrescription" class="form-control" rows="3" disabled></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ @section Scripts
+{
+
+    <script>
+
+        const diagnosisModal = document.getElementById('diagnosisModal');
+        const viewDiagnosisModal = document.getElementById('viewDiagnosisModal');
+
+        diagnosisModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+
+            const patientId = button.getAttribute('data-id');
+            const patientName = button.getAttribute('data-name');
+            const visitDate = button.getAttribute('data-visit-date'); // Format: yyyy-MM-dd
+
+            // Assign to hidden inputs
+            document.getElementById('PatientId').value = patientId;
+            document.getElementById('VisitDate').value = visitDate;
+            document.getElementById('PatientName').value = patientName;
+            document.getElementById('HiddenPatientName').value = patientName;
+
+            // Display readable values in disabled inputs
+            document.getElementById('PatientName').value = patientName;
+
+            // Format visit date to "MMM dd, yyyy" (e.g., Jul 18, 2025)
+            const formattedDate = new Date(visitDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit'
+            });
+
+            document.getElementById('VisitDateDisplay').value = formattedDate;
+        });
+
+
+        @if (TempData["DoctorNoteSuccess"] != null)
+        {
+            <text>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '@TempData["DoctorNoteSuccess"]',
+                    confirmButtonColor: '#3085d6'
+                });
+            </text>
+        }
+        else if (TempData["DoctorNoteError"] != null)
+        {
+            <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '@TempData["DoctorNoteError"]',
+                    confirmButtonColor: '#d33'
+                });
+            </text>
+        }
+
+       
+
+        viewDiagnosisModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const patientId = button.getAttribute('data-id');
+            const visitDate = button.getAttribute('data-visitdate');
+
+            fetch(`/Doctor/GetDoctorNote?patientId=${encodeURIComponent(patientId)}&visitDate=${encodeURIComponent(visitDate)}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Received data:", data); // ✅ See what data is returned
+                    if (data.success) {
+                        document.getElementById('ViewPatientName').value = data.patientName;
+                        document.getElementById('ViewVisitDate').value = data.visitDate;
+                        document.getElementById('viewDiagnosis').value = data.diagnosis;
+                        document.getElementById('viewPrescription').value = data.prescription;
+                    } else {
+                        alert(data.message || "No data found.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error loading diagnosis data:", error);
+                    alert("Failed to load data.");
+                });
+        });
+
+    </script>
+}

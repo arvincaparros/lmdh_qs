@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Patient Selection Page";
+}
+
+<div id="patientSelection-bg" class="d-flex align-items-center justify-content-center vh-100">
+    <div class="card shadow p-4 rounded-3">
+        <div class="card-body text-center">
+            <h3 class="card-title text-center mb-4">Welcome to  Laurel Memorial Destrict Hospital</h3>
+            <p>Tanauan City, Batangas</p>
+            <h4>Patient Registration</h4>
+            <p class="text-muted mb-4">Please select your patient type to continue</p>
+
+            <div class="d-grid gap-2 mt-4">
+                <a href="/PatientRegistration/PatientRegistrationForm"
+                   class="btn btn-primary rounded-pill btn-lg"
+                   onclick="setPatientType('New')">I'm a New Patient</a>
+                <small>New Patient</small>
+
+                <a href="/PatientRegistration/PatientRegistrationForm"
+                   class="btn btn-secondary rounded-pill btn-lg mt-4"
+                   onclick="setPatientType('Old')">I'm an Old Patient</a>
+                <small>Returning Patient</small>
+            
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        function setPatientType(type) {
+            localStorage.setItem('patientType', type);
+        }
+    </script>
+}

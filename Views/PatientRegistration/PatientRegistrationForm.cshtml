@@ -1,0 +1,219 @@
+﻿
+
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">LAUREL MEMORIAL DISTRICT HOSPITAL</h1>
+        <h5>SANTOR, TANAUAN CITY, BATANGAS</h5>
+        <h5>(043)706-5255 / 784-0958</h5>
+    </div>
+
+    <div class="card shadow-lg">
+        <div class="card-header bg-secondary text-light text-center">
+            <h5 class="mb-0" id="formTitle">New Patient Information Form</h5>
+        </div>
+        <div class="card-body">
+            <form id="patientForm" method="post">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="visitDate" class="form-label">Date of Visit (Petsa ng Pagbisita)</label>
+                        <input type="date" class="form-control" id="visitDate" name="visitDate" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="visitTime" class="form-label">Time of Visit (Oras ng Pagbisita)</label>
+                        <input type="time" class="form-control" id="visitTime" name="visitTime" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="firstName" class="form-label">First Name (Unang Pangalan)</label>
+                        <input type="text" class="form-control" id="firstName" name="firstName" onchange="capitalizeFirstLetter(this)" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="middleName" class="form-label">Middle Name (Gitnang Pangalan)</label>
+                        <input type="text" class="form-control" id="middleName" name="middleName" onchange="capitalizeFirstLetter(this)">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="lastName" class="form-label">Last Name (Huling Pangalan)</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName" onchange="capitalizeFirstLetter(this)" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address (Tirahan)</label>
+                    <input type="text" class="form-control" id="address" name="address" onchange="capitalizeFirstLetter(this)" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="TelNumber" class="form-label">Tel No (Numero ng Telepono)</label>
+                    <input type="tel" class="form-control" id="TelNumber" name="TelNumber" pattern="[0-9]{7,11}" placeholder="e.g. 09123456789 or landline">
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="Birthdate" class="form-label">Date of Birth (Araw ng Kapanganakan)</label>
+                        <input type="text" class="form-control" id="Birthdate" name="Birthdate" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="age" class="form-label">Age (Edad)</label>
+                        <input type="number" class="form-control" id="age" name="age" min="0" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="status" class="form-label">Status (Katayuan sa Buhay)</label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option selected disabled>Select Status</option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Widowed">Widowed</option>
+                            <option value="Separated">Separated</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="sex" class="form-label">Sex (Kasarian)</label>
+                        <select class="form-select" id="sex" name="sex" required>
+                            <option selected disabled>Select Sex</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="department" class="form-label">Specialist (Espesyalista)</label>
+                        <select class="form-select" id="department" name="department" required>
+                            <option selected disabled>Select Department</option>
+                            <option value="Medical">Medical</option>
+                            <option value="OB-Gyne">OB-Gyne</option>
+                            <option value="Ortho">Ortho</option>
+                            <option value="Pedia">Pedia</option>
+                            <option value="Surgeon">Surgeon</option>
+                        </select>
+                    </div>
+
+                </div>
+              
+                <!-- Consent -->
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="HasConsented" name="HasConsented" value="true" required>
+                    <label class="form-check-label" for="HasConsented">
+                        I hereby give my consent to the collection and use of my personal information for patient registration and queuing purposes in accordance with the Data Privacy Act of 2012.
+                        <br />
+                        <em>(Ako ay nagbibigay ng pahintulot sa pagkuha at paggamit ng aking personal na impormasyon para sa pagpaparehistro at pagproseso ng pila, alinsunod sa Batas sa Proteksyon ng Datos ng 2012.)</em>
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary w-25">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const patientType = localStorage.getItem("patientType");
+            const titleElement = document.getElementById("formTitle");
+
+            if (titleElement && patientType) {
+                if (patientType === "New") {
+                    titleElement.textContent = "New Patient Information Form";
+                } else if (patientType === "Old") {
+                    titleElement.textContent = "Old Patient Information Form";
+                }
+            }
+        });
+
+        //Make fisrt letter of every word capital for first name, mid name, last name
+        function capitalizeFirstLetter(input) {
+            input.value = input.value
+                .toLowerCase()
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        //Save patient info
+               $(document).ready(function () {
+            $("#patientForm").on("submit", function (e) {
+                e.preventDefault(); // prevent normal form submission
+
+                if (!$("#HasConsented").is(":checked")) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Paalala',
+                        text: 'Kailangan mong pumayag upang magpatuloy sa pagpaparehistro.'
+                    });
+                    return;
+                }
+
+                const formData = $(this).serialize();
+
+                $.ajax({
+                    url: "/PatientRegistration/PatientRegistrationForm",
+                    type: "POST",
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message
+                            });
+                            $("#patientForm")[0].reset();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Error',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Server Error',
+                            text: 'Something went wrong. Please try again.'
+                        });
+                    }
+                });
+            });
+        });
+
+        // BirthDate format
+            flatpickr("#Birthdate", {
+            dateFormat: "m/d/Y", // mm/dd/yyyy
+            allowInput: true
+        });
+
+        // Auto fill date and time
+        function updateDateTimeInputs() 
+        {
+            const now = new Date();
+
+            // Format date: yyyy-MM-dd
+            const date = now.toISOString().split('T')[0];
+
+            // Format time: HH:mm
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const time = `${hours}:${minutes}`;
+
+            document.getElementById('visitDate').value = date;
+            document.getElementById('visitTime').value = time;
+        }
+
+        // Set initially
+        updateDateTimeInputs();
+
+        // Update every 30 seconds
+        setInterval(updateDateTimeInputs, 30000);
+    </script>
+}

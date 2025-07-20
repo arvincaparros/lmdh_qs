@@ -1,0 +1,311 @@
+﻿@model IEnumerable<LMDH_QS.Models.Queue>
+
+@{
+    ViewData["Title"] = "Public Queue Display";
+}
+
+<div class="container-fluid p-4">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">LAUREL MEMORIAL DISTRICT HOSPITAL</h2>
+        <h5 class="text-secondary mb-1">Queue Monitoring Display</h5>
+        <div id="clock" class="fs-5 text-muted"></div>
+    </div>
+
+    <div class="mt-5">
+        <div class="row g-4">
+            <!-- Now Serving -->
+            <div class="col-md-6">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-warning text-white fw-bold fs-5">
+                        <i class="bi bi-person-check-fill me-2"></i> Now Serving
+                    </div>
+                    <div class="card-body d-flex justify-content-center align-items-center text-center" style="height: 200px;">
+                        <div id="servingSection">
+                            <h1 class="display-4 fw-bold text-dark mb-0" id="servingTicket">---</h1>
+                            <p class="text-muted mt-3 fs-5" id="servingMessage">Good morning! Queue will begin shortly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Patient -->
+            <div class="col-md-6">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-success text-white fw-bold fs-5">
+                        <i class="bi bi-person-lines-fill me-2"></i> Next Patient
+                    </div>
+                    <div class="card-body d-flex justify-content-center align-items-center text-center" style="height: 200px;">
+                        <div id="nextSection">
+                            <h2 class="text-success mb-0" id="nextTicket">---</h2>
+                            <p class="text-muted mt-2 fs-5" id="nextMessage">Waiting for next patient...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Queue Table -->
+    <div class="card shadow-lg border-0 mt-4">
+        <div class="card-header bg-dark text-white px-4 py-2 fs-4 fw-bold">
+            <i class="bi bi-people-fill me-2"></i> Patient Queue Status
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-borderless text-center align-middle fs-5 mb-0">
+                    <thead class="bg-secondary text-white">
+                        <tr class="fs-6 text-uppercase">
+                            <th class="py-2">Department</th>
+                            <th class="py-2">Check-In</th>
+                            @* <th class="py-2">Patient Name</th> *@
+                            <th class="py-2">Ticket No.</th>
+                            <th class="py-2">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="queueTable">
+                        @* Loaded dynamically via JavaScript *@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/queueHub")
+            .build();
+
+        connection.on("UpdateQueue", () => {
+            console.log("🔁 Update triggered via SignalR");
+            fetchQueue();
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString();
+        }
+
+        function fetchQueue() {
+            fetch('/Public/QueueRows')
+                .then(res => res.text())
+                .then(html => {
+                    const tbody = document.getElementById('queueTable');
+                    if (tbody) {
+                        tbody.innerHTML = html;
+
+                        const servingRow = [...tbody.rows].find(row =>
+                            row.classList.contains('bg-warning')
+                        );
+
+                        if (servingRow) {
+                            const ticketNo = servingRow.cells[3]?.textContent.trim();
+                            const department = servingRow.cells[0]?.textContent.trim();
+                            if (ticketNo && department) {
+                                speak(`Ticket number ${ticketNo}. Please proceed to ${department}`);
+                            }
+                        }
+                    }
+                })
+                .catch(err => console.error("Failed to fetch queue:", err));
+        }
+
+        function speak(message) {
+            const synth = window.speechSynthesis;
+            if (synth.speaking) {
+                console.log("Already speaking...");
+                return;
+            }
+
+            const utter = new SpeechSynthesisUtterance(message);
+            utter.lang = "en-US";
+            utter.rate = 1;
+            utter.pitch = 1;
+            synth.speak(utter);
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Initial load
+        fetchQueue();
+
+        // Fallback polling in case SignalR fails
+        setInterval(fetchQueue, 30000);
+    </script>
+
+
+} *@
+
+@section Scripts {
+   @*  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/queueHub")
+            .build();
+
+        connection.on("UpdateQueue", () => {
+            fetchQueue();
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+
+        function fetchQueue() {
+            fetch('/Public/QueueRows')
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('queueTable').innerHTML = html;
+
+                    // Optional: speak "Serving" row
+                    const servingRow = [...document.querySelectorAll('#queueTable tr')]
+                        .find(r => r.classList.contains('table-warning'));
+                    if (servingRow) {
+                        const ticket = servingRow.cells[3].textContent.trim();
+                        const dept = servingRow.cells[0].textContent.trim();
+                        speak(`Ticket number ${ticket}. Please proceed to ${dept}`);
+                    }
+                });
+        }
+
+        function speak(text) {
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'en-US';
+            window.speechSynthesis.speak(utter);
+        }
+
+        fetchQueue(); // initial load
+    </script> *@
+
+    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/queueHub")
+            .build();
+
+        // 🟡 On update from staff (Next, Skip, etc.)
+        connection.on("UpdateQueue", () => {
+            fetchQueue();
+        });
+
+        // 🔊 On direct call from staff ("Call" button)
+        connection.on("CallPatient", (data) => {
+            const ticket = data.ticketNo || "Unknown";
+            const department = data.department || "the department";
+
+            speak(`Ticket number ${ticket}. Please proceed to ${department}`);
+        });
+
+        // Start SignalR connection
+        connection.start().catch(err => console.error("SignalR Connection Error:", err));
+
+        // 🗂️ Fetch queue table from partial view
+        function fetchQueue() {
+            fetch('/Public/QueueRows')
+                .then(res => res.text())
+                .then(html => {
+                    const table = document.getElementById('queueTable');
+                    if (table) {
+                        table.innerHTML = html;
+                    }
+                })
+                .catch(err => console.error("Failed to fetch queue:", err));
+        }
+
+        // 🔈 Speak message
+        function speak(text) {
+            const synth = window.speechSynthesis;
+
+            if (synth.speaking) {
+                console.log("Already speaking. Ignoring call.");
+                return;
+            }
+
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'en-US';
+            synth.speak(utter);
+        }
+
+        // Initial load
+        fetchQueue();
+    </script>
+ *@
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/queueHub")
+            .build();
+
+        // Update table and messages on queue update
+        connection.on("UpdateQueue", () => {
+            fetchQueue();
+        });
+
+        // When staff clicks "Call"
+        connection.on("CallPatient", (data) => {
+            const ticket = data.ticketNo || "";
+            const department = data.department || "the department";
+            const next = data.nextTicketNo || "";
+
+            updateTickets(ticket, next);
+            speak(`Ticket number ${ticket}. Please proceed to ${department}`);
+        });
+
+        connection.start()
+            .then(() => {
+                console.log("SignalR connected");
+                fetchQueue();
+            })
+            .catch(err => console.error("SignalR Error:", err));
+
+        function fetchQueue() {
+            fetch('/Public/QueueRows')
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('queueTable').innerHTML = html;
+                });
+        }
+
+        function updateTickets(serving, next) {
+            const servingTicket = document.getElementById("servingTicket");
+            const nextTicket = document.getElementById("nextTicket");
+
+            const servingMsg = document.getElementById("servingMessage");
+            const nextMsg = document.getElementById("nextMessage");
+
+            servingTicket.textContent = serving || "---";
+            nextTicket.textContent = next || "---";
+
+            servingMsg.style.display = serving ? "none" : "block";
+            nextMsg.style.display = next ? "none" : "block";
+        }
+
+        function speak(text) {
+            const synth = window.speechSynthesis;
+            if (synth.speaking) {
+                console.log("Already speaking.");
+                return;
+            }
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'en-US';
+            synth.speak(utter);
+        }
+
+        // Live clock
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString();
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+}

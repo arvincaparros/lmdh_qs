@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Select Portal";
+}
+
+
+<div id="page-selector-bg" class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="container">
+        <h2 class="text-center mb-5">Select Access Page</h2>
+        <div class="row justify-content-center g-4">
+
+            <!-- Public Display -->
+            <div class="col-md-3">
+                <a asp-controller="Public" asp-action="PublicDisplay" class="text-decoration-none">
+                    <div class="card bg-dark text-white text-center p-4 border-0 shadow-sm">
+                        <div class="display-4 mb-3">📺</div>
+                        <h5 class="card-title">Public Display</h5>
+                        <p class="card-text small">View current queue status</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Staff Page -->
+            <div class="col-md-3">
+                <a asp-controller="Staff" asp-action="StaffControl" class="text-decoration-none">
+                    <div class="card bg-primary text-white text-center p-4 border-0 shadow-sm">
+                        <div class="display-4 mb-3">🧑‍💼</div>
+                        <h5 class="card-title">Staff Panel</h5>
+                        <p class="card-text small">Manage queue operations</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Doctor Page -->
+            <div class="col-md-3">
+                <a asp-controller="Doctor" asp-action="DoctorControl" class="text-decoration-none">
+                    <div class="card bg-success text-white text-center p-4 border-0 shadow-sm">
+                        <div class="display-4 mb-3">🩺</div>
+                        <h5 class="card-title">Doctor Dashboard</h5>
+                        <p class="card-text small">Track patient queue & details</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Patient Registration -->
+            <div class="col-md-3">
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none">
+                    <div class="card bg-warning text-dark text-center p-4 border-0 shadow-sm">
+                        <div class="display-4 mb-3">📝</div>
+                        <h5 class="card-title">Patient Registration</h5>
+                        <p class="card-text small">Register a patient in queue</p>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
