@@ -50,3 +50,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=PageSelector}/{id?}");
 
 app.Run();
+ 

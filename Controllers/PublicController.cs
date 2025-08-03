@@ -34,7 +34,18 @@ namespace LMDH_QS.Controllers
 
             return PartialView("_QueueRows", queues); // or View()
         }
-      
+
+        public IActionResult ConsultationQueueRows()
+        {
+            var queues = dbContext.Queues
+                .Where(q => q.VisitDate.Date == DateTime.Today &&
+                       (q.Status == "Consultation Standby" || q.Status == "Consultation Serving"))
+                .Take(10)
+                .OrderBy(q => q.QueueNumber)
+                .ToList();
+
+            return PartialView("_ConsultationQueueRows", queues); // or View()
+        }
 
     }
 }

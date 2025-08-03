@@ -3,18 +3,19 @@
 @foreach (var item in Model)
 {
     <tr id="row-@item.Id"
-        class="@(item.Status == "Serving" ? "bg-warning text-dark"
-                    : item.Status == "Done" ? "bg-info text-dark"
-                    : item.Status == "Standby" ? "bg-success text-white"
-                    : item.Status == "Skipped" ? "bg-danger text-white"
-                    : "")">
+        class="@(item.Status == "Consultation Serving" ? "bg-warning text-dark"
+                : item.Status == "Consultation Standby" ? "bg-success text-white"
+                : item.Status == "Skipped" ? "bg-danger text-white"
+                : item.Status == "Done" ? "bg-info text-dark"
+                : "")">
+
 
     <td>@item.Department</td>
     <td>@item.VisitTime.ToString(@"hh\:mm")</td>
     <td>@item.PatientName</td>
     <td class="fw-bold">@($"{item.DeptCode}{item.QueueNumber:D3}")</td>
     <td>
-        @if (item.Status != "Consultation" || item.Status != "Done" || item.Status != "Consultation Serving" || item.Status != "Consultation Missed")
+        @if (item.Status == "Consultation Serving" || item.Status == "Consultation Missed" || item.Status == "Consultation Standby")
             {
                 var isoDate = item.VisitDate.ToString("yyyy-MM-ddTHH:mm:ss");
 
@@ -24,16 +25,10 @@
                         * kung wala ang patient pindutin ang Missed -> update status to 'Missed' -> show in Missed Table -> can click button Requeue to back in Queues
                         * kung tapos na pindutin ang Next 
                     *@
-                    <button class="btn btn-primary btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Call', '@isoDate', '@item.Department')">Call</button>
-
-                    @* Skip - skip patient if laboratory is release the next day -> Done status*@ 
-                    <button class="btn btn-danger btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Skip', '@isoDate', '@item.Department')">Skip</button>
-
-                    @* Standby - patient laboratory result is release within the day *@
-                    <button class="btn btn-success btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Standby', '@isoDate', '@item.Department')">Standby</button>
+                    <button class="btn btn-primary btn-sm" onclick="updateStatus('@item.PatientIdentification', 'CallForConsultation', '@isoDate', '@item.Department')">Call</button>
 
                     @* Next - Done Pre-assessment -> update status to Done -> removed in Queue*@
-                    <button class="btn btn-dark btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Consultation', '@isoDate', '@item.Department')">Consultation</button>
+                    <button class="btn btn-dark btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Done', '@isoDate', '@item.Department')">Done</button>
 
                     @* Missed - update status to 'Missed' -> show in Missed Table -> can click button Requeue to back in Queues *@
                     <button class="btn btn-secondary btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Missed', '@isoDate', '@item.Department')">

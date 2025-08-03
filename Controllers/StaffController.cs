@@ -19,14 +19,24 @@ namespace LMDH_QS.Controllers
             _hubContext = hubContext;
         }
 
-        public IActionResult StaffControl()
+        public IActionResult PreAssessment()
         {
-            var todayQueues = _dbContext.Queues
+            var forPreAssessment = _dbContext.Queues
                 .Where(q => q.VisitDate.Date == DateTime.Today)
                 .OrderBy(q => q.QueueNumber)
                 .ToList();
 
-            return View(todayQueues);
+            return View(forPreAssessment);
+        }
+
+        public IActionResult Consultation()
+        {
+            var forConsultation = _dbContext.Queues
+                .Where(q => q.VisitDate.Date == DateTime.Today && q.Status == "Consultation Standby")
+                .OrderBy(q => q.QueueNumber)
+                .ToList();
+
+            return View(forConsultation);
         }
 
         public IActionResult QueueRows()
@@ -39,6 +49,18 @@ namespace LMDH_QS.Controllers
                 .ToList();
 
             return PartialView("_QueueRows", queues);
+        }
+
+        public IActionResult ConsultationQueueRows()
+        {
+            var today = DateTime.Today;
+            var queues = _dbContext.Queues
+                .Where(q => q.VisitDate.Date == today &&
+                       (q.Status == "Consultation Standby" || q.Status == "Consultation Serving"))
+                .OrderBy(q => q.QueueNumber)
+                .ToList();
+
+            return PartialView("_ConsultationQueueRows", queues);
         }
 
 
@@ -157,13 +179,94 @@ namespace LMDH_QS.Controllers
 
                 await _hubContext.Clients.All.SendAsync("UpdateQueue");
 
-                return Json(new { success = true });
+                //return Json(new { success = true });
+
+                return Json(new
+                {
+                    success = true,
+                    ticketNo = currentTicket,
+                    department = queue.Department,
+                    removeRow = false
+                });
+
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "An internal error occurred." });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CallForConsultation([FromBody] QueueActionRequest request)
+        {
+            try
+            {
+                if (request == null || string.IsNullOrEmpty(request.PatientIdentification)
+                    || string.IsNullOrEmpty(request.Department) || request.VisitDate == default)
+                {
+                    return BadRequest(new { success = false, message = "Invalid request data." });
+                }
+
+                var queue = await _dbContext.Queues.FirstOrDefaultAsync(q =>
+                    q.PatientIdentification == request.PatientIdentification &&
+                    q.VisitDate.Date == request.VisitDate.Date &&
+                    q.Department == request.Department &&
+                    (q.Status == "Consultation Standby" || q.Status == "Consultation Serving"));
+
+                if (queue == null)
+                {
+                    return NotFound(new { success = false, message = "Patient not found in the consultation queue." });
+                }
+
+                // Update status if it's Standby
+                if (queue.Status == "Consultation Standby")
+                {
+                    queue.Status = "Consultation Serving";
+                }
+
+                await _dbContext.SaveChangesAsync();
+
+                string currentTicket = $"{queue.DeptCode}{queue.QueueNumber:D3}";
+
+                var next = await _dbContext.Queues
+                    .Where(q =>
+                        q.Department == request.Department &&
+                        q.VisitDate.Date == DateTime.Today &&
+                        q.Status == "Consultation Standby" &&
+                        q.QueueNumber > queue.QueueNumber)
+                    .OrderBy(q => q.QueueNumber)
+                    .FirstOrDefaultAsync();
+
+                string? nextTicket = next != null
+                    ? $"{next.DeptCode}{next.QueueNumber:D3}"
+                    : null;
+
+                // Notify display via SignalR
+                await _hubContext.Clients.All.SendAsync("CallPatient", new
+                {
+                    PatientName = queue.PatientName,
+                    TicketNo = currentTicket,
+                    Department = queue.Department,
+                    NextTicketNo = nextTicket ?? ""
+                });
+
+                await _hubContext.Clients.All.SendAsync("UpdateQueue");
+
+                return Json(new
+                {
+                    success = true,
+                    ticketNo = currentTicket,
+                    department = queue.Department,
+                    removeRow = false
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An internal error occurred." });
+            }
+        }
+
+
 
 
         [HttpPost]
@@ -209,7 +312,7 @@ namespace LMDH_QS.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Next([FromBody] QueueActionRequest request)
+        public async Task<IActionResult> Consultation([FromBody] QueueActionRequest request)
         {
             var queue = _dbContext.Queues
                 .FirstOrDefault(q => q.PatientIdentification == request.PatientIdentification &&
@@ -218,7 +321,7 @@ namespace LMDH_QS.Controllers
 
             if (queue != null)
             {
-                queue.Status = "Done";
+                queue.Status = "Consultation Standby";
                 _dbContext.SaveChanges();
 
                 await _hubContext.Clients.All.SendAsync("UpdateQueue");
@@ -226,6 +329,8 @@ namespace LMDH_QS.Controllers
 
             return Json(new { success = true });
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> Missed([FromBody] QueueActionRequest request)
@@ -256,6 +361,33 @@ namespace LMDH_QS.Controllers
                 .ToList();
 
             return PartialView("_MissedQueueRows", missed); // Use a dedicated partial view
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Done([FromBody] QueueActionRequest request)
+        {
+            var queue = _dbContext.Queues
+                .FirstOrDefault(q => q.PatientIdentification == request.PatientIdentification &&
+                                     q.VisitDate.Date == request.VisitDate.Date &&
+                                     q.Department == request.Department);
+
+            if (queue != null)
+            {
+                queue.Status = "Done";
+                _dbContext.SaveChanges();
+
+                await _hubContext.Clients.All.SendAsync("UpdateConsultationQueue");
+
+                return Json(new { success = true, removeRow = true });
+            }
+
+            return Json(new { success = false });
+        }
+
+        public IActionResult StaffPageSelector()
+        {
+            return View();
         }
     }
 }

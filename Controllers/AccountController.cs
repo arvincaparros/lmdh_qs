@@ -43,7 +43,7 @@ namespace LMDH_QS.Controllers
 
                 // 🔁 Role-based redirection
                 if (user.Role == "Staff")
-                    return RedirectToAction("StaffControl", "Staff");
+                    return RedirectToAction("StaffPageSelector", "Staff");
 
                 if (user.Role == "Doctor")
                     return RedirectToAction("DoctorControl", "Doctor");

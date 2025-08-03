@@ -123,7 +123,7 @@ namespace LMDH_QS.Controllers
             }
 
             var message = isAlreadyInQueue
-                ? $"You are already in the queue for {model.Department}. Please wait to be called."
+                ? $"You are already in the queue for {model.Department}. Please wait to be called for Pre-assessment."
                 : isExisting
                     ? $"You are already registered. Your queue number is {model.QueueNumber:D2}. Please wait to be called."
                     : $"Patient registered successfully! Your queue number is {model.QueueNumber:D2}. Please wait to be called.";

@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Staff Page Selection";
+}
+
+<div id="page-selector-bg" class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="container">
+        <h2 class="text-center mb-5">Select Access Page</h2>
+        <div class="row justify-content-center g-4">
+
+            <!-- Pre-assessment Page -->
+            <div class="col-md-3">
+                <a asp-controller="Staff" asp-action="PreAssessment" class="text-decoration-none">
+                    <div class="card bg-info text-dark text-center p-4 border-0 shadow-sm">
+                        <div class="display-4 mb-3">📝</div>
+                        <h5 class="card-title">Pre-assessment</h5>
+                        <p class="card-text small">Perform initial patient screening</p>
+                    </div>
+                </a>
+            </div>
+
+
+            <!-- Consultation Page -->
+            <div class="col-md-3">
+                <a asp-controller="Staff" asp-action="Consultation" class="text-decoration-none">
+                    <div class="card bg-success text-white text-center p-4 border-0 shadow-sm">
+                        <div class="display-4 mb-3">👨‍⚕️</div>
+                        <h5 class="card-title">Consultation</h5>
+                        <p class="card-text small">Doctor consultation interface</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

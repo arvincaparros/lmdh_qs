@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LMDH-QS")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3520757de14573e0511a68b6cb0def2ece891c42")]
 [assembly: System.Reflection.AssemblyProductAttribute("LMDH-QS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LMDH-QS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

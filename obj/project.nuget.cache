@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Z2XWA3VyomI=",
+  "dgSpecHash": "wTZNYcHnP8I=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Arvin\\Documents\\LMDH-QS\\LMDH-QS.csproj",
+  "projectFilePath": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\LMDH-QS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Arvin\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Arvin\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
