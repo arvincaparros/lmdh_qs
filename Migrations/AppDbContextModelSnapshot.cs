@@ -73,7 +73,20 @@ namespace LMDH_QS.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DischargeDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan?>("DischargeTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Disposition")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DoctorName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HistoryOfIllness")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PatientIdentification")
@@ -84,7 +97,7 @@ namespace LMDH_QS.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Prescription")
+                    b.Property<string>("Remarks")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -94,6 +107,47 @@ namespace LMDH_QS.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DoctorNotes");
+                });
+
+            modelBuilder.Entity("LMDH_QS.Models.PatientVitalRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BP")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CR")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PR")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PatientId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RecordedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RecordedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Temp")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("VisitDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Weight")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PatientVitalRecord");
                 });
 
             modelBuilder.Entity("LMDH_QS.Models.PatientsInformation", b =>

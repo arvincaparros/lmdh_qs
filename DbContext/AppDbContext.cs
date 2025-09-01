@@ -15,5 +15,7 @@ namespace LMDH_QS
         public DbSet<Queue> Queues { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<DoctorNote> DoctorNotes { get; set; }
+
+        public DbSet<PatientVitalRecord> PatientVitalRecord { get; set; }
     }
 }

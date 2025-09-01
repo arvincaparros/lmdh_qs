@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace LMDH_QS.Controllers
 {
@@ -142,8 +143,9 @@ namespace LMDH_QS.Controllers
 
                 var queue = _dbContext.Queues.FirstOrDefault(q =>
                     q.PatientIdentification == request.PatientIdentification &&
-                    q.VisitDate.Date == request.VisitDate.Date &&
-                    q.Department == request.Department);
+                    q.Department == request.Department &&
+                    q.VisitDate >= DateTime.Now.Date &&
+                    q.Status == "Standby");
 
                 if (queue == null)
                 {
@@ -153,6 +155,7 @@ namespace LMDH_QS.Controllers
                 //Update status to "Serving"
                 queue.Status = "Serving";
                 _dbContext.SaveChanges();
+
 
                 string currentTicket = $"{queue.DeptCode}{queue.QueueNumber:D3}";
 
@@ -188,7 +191,6 @@ namespace LMDH_QS.Controllers
                     department = queue.Department,
                     removeRow = false
                 });
-
             }
             catch (Exception ex)
             {
@@ -209,7 +211,7 @@ namespace LMDH_QS.Controllers
 
                 var queue = await _dbContext.Queues.FirstOrDefaultAsync(q =>
                     q.PatientIdentification == request.PatientIdentification &&
-                    q.VisitDate.Date == request.VisitDate.Date &&
+                    q.VisitDate.Date == DateTime.Now.Date &&
                     q.Department == request.Department &&
                     (q.Status == "Consultation Standby" || q.Status == "Consultation Serving"));
 
@@ -266,15 +268,12 @@ namespace LMDH_QS.Controllers
             }
         }
 
-
-
-
         [HttpPost]
         public async Task<IActionResult> Skip([FromBody] QueueActionRequest request)
         {
             var queue = _dbContext.Queues
                 .FirstOrDefault(q => q.PatientIdentification == request.PatientIdentification &&
-                                     q.VisitDate.Date == request.VisitDate.Date &&
+                                     q.VisitDate.Date == DateTime.Now.Date &&
                                      q.Department == request.Department);
 
             if (queue != null)
@@ -296,7 +295,7 @@ namespace LMDH_QS.Controllers
         {
             var queue = _dbContext.Queues
                 .FirstOrDefault(q => q.PatientIdentification == request.PatientIdentification &&
-                                     q.VisitDate.Date == request.VisitDate.Date &&
+                                     q.VisitDate.Date == DateTime.Now.Date &&
                                      q.Department == request.Department);
 
             if (queue != null)
@@ -310,13 +309,12 @@ namespace LMDH_QS.Controllers
             return Json(new { success = true });
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> Consultation([FromBody] QueueActionRequest request)
+        public async Task<IActionResult> ConsultationStandby([FromBody] QueueActionRequest request)
         {
             var queue = _dbContext.Queues
                 .FirstOrDefault(q => q.PatientIdentification == request.PatientIdentification &&
-                                     q.VisitDate.Date == request.VisitDate.Date &&
+                                     q.VisitDate.Date == DateTime.Now.Date &&
                                      q.Department == request.Department);
 
             if (queue != null)
@@ -331,13 +329,32 @@ namespace LMDH_QS.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> Consultation([FromBody] QueueActionRequest request)
+        {
+            var queue = _dbContext.Queues
+                .FirstOrDefault(q => q.PatientIdentification == request.PatientIdentification &&
+                                     q.VisitDate.Date == DateTime.Now.Date &&
+                                     q.Department == request.Department);
 
+            if (queue != null)
+            {
+                queue.Status = "Consultation Standby";
+                _dbContext.SaveChanges();
+
+                await _hubContext.Clients.All.SendAsync("UpdateQueue");
+            }
+
+            return Json(new { success = true });
+        }
+
+        
         [HttpPost]
         public async Task<IActionResult> Missed([FromBody] QueueActionRequest request)
         {
             var queue = _dbContext.Queues.FirstOrDefault(q =>
                 q.PatientIdentification == request.PatientIdentification &&
-                q.VisitDate.Date == request.VisitDate.Date &&
+                q.VisitDate.Date == DateTime.Now.Date &&
                 q.Department == request.Department);
 
             if (queue != null)
@@ -346,6 +363,28 @@ namespace LMDH_QS.Controllers
                 _dbContext.SaveChanges();
 
                 await _hubContext.Clients.All.SendAsync("UpdateQueue");
+
+                return Json(new { success = true, removeRow = false }); // keep in list or show in Missed table
+            }
+
+            return Json(new { success = false, message = "Patient not found in queue." });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MissedConsultation([FromBody] QueueActionRequest request)
+        {
+            var queue = _dbContext.Queues.FirstOrDefault(q =>
+                q.PatientIdentification == request.PatientIdentification &&
+                q.VisitDate.Date == DateTime.Now.Date &&
+                q.Department == request.Department);
+
+            if (queue != null)
+            {
+                queue.Status = "Missed Consultation";
+                _dbContext.SaveChanges();
+
+                await _hubContext.Clients.All.SendAsync("UpdateQueue");
+                await _hubContext.Clients.All.SendAsync("UpdateConsultationQueue");
 
                 return Json(new { success = true, removeRow = false }); // keep in list or show in Missed table
             }
@@ -363,13 +402,23 @@ namespace LMDH_QS.Controllers
             return PartialView("_MissedQueueRows", missed); // Use a dedicated partial view
         }
 
+        public IActionResult MissedConsultationList()
+        {
+            var missed = _dbContext.Queues
+                .Where(q => q.Status == "Missed Consultation" && q.VisitDate.Date == DateTime.Today)
+                .OrderBy(q => q.QueueNumber)
+                .ToList();
+
+            return PartialView("_MissedConsultationQueueRows", missed); // Use a dedicated partial view
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Done([FromBody] QueueActionRequest request)
         {
             var queue = _dbContext.Queues
                 .FirstOrDefault(q => q.PatientIdentification == request.PatientIdentification &&
-                                     q.VisitDate.Date == request.VisitDate.Date &&
+                                     q.VisitDate.Date == DateTime.Now.Date &&
                                      q.Department == request.Department);
 
             if (queue != null)
@@ -389,5 +438,38 @@ namespace LMDH_QS.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveVitalRecord(PatientVitalRecord model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                                  .Select(e => e.ErrorMessage);
+                    return Json(new { success = false, message = "Invalid data", errors });
+                }
+
+                var recordedBy = User.Claims.FirstOrDefault(c => c.Type == "FullName")?.Value
+                                 ?? User.Identity.Name;
+
+                model.RecordedBy = recordedBy;
+                model.RecordedAt = DateTime.Now;
+
+                _dbContext.PatientVitalRecord.Add(model);
+                await _dbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Vital record saved successfully!" });
+            }
+            catch (Exception ex)
+            {
+                // 🔥 log error
+                Console.WriteLine("❌ SaveVitalRecord Error: " + ex.Message);
+                return Json(new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+
     }
 }

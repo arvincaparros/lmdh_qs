@@ -29,10 +29,10 @@
                     <th>Check-in Time</th>
                     <th>Patient Name</th>
                     <th>Ticket No.</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody id="consultationQueueTable">
+
             </tbody>
 
         </table>
@@ -65,14 +65,14 @@
         // 🔁 Listen specifically for consultation queue updates
         connection.on("UpdateConsultationQueue", () => {
             fetchQueue();         // Refresh consultation table
-            // fetchMissedQueue();   // Refresh missed table (if needed)
+            fetchMissedQueue();   // Refresh missed table (if needed)
         });
 
         connection.start()
             .then(() => {
                 console.log("SignalR connected to queueHub (Consultation)");
                 fetchQueue();
-                // fetchMissedQueue();
+                fetchMissedQueue();
             })
             .catch(err => console.error("SignalR Error:", err));
 
@@ -84,13 +84,33 @@
                 });
         }
 
-        // function fetchMissedQueue() {
-        //     fetch('/Staff/ConsultaionMissedList')
-        //         .then(res => res.text())
-        //         .then(html => {
-        //             document.getElementById('missedTable').innerHTML = html;
-        //         });
-        // }
+        function fetchMissedQueue() {
+            fetch('/Staff/MissedConsultationList')
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('missedTable').innerHTML = html;
+                });
+        }
+
+        function updateTopPatient(action) {
+            // Get the first row inside #queueTable but ignore the last one (buttons row)
+            let firstRow = document.querySelector("#consultationQueueTable tr:not(:last-child)");
+
+            if (!firstRow) {
+                Swal.fire("No patients", "There are no patients for consultation in the queue.", "info");
+                return;
+            }
+
+            // Extract details from data-* attributes
+            let patientId = firstRow.id.replace("row-", "");
+            let department = firstRow.getAttribute("data-department");
+            let visitDate = firstRow.getAttribute("data-visitdate");
+
+          
+
+            // Pass to updateStatus
+            updateStatus(patientId, action, visitDate, department);
+        }
 
         // 🔁 Called when any action button is clicked (Call, Skip, Done, etc.)
         function updateStatus(patientId, action, visitDate, department) {
@@ -115,6 +135,7 @@
 
             sendStatusUpdate(patientId, action, formattedVisitDate, department);
         }
+
 
         function sendStatusUpdate(patientId, action, visitDate, department) {
             fetch(`/Staff/${action}`, {
@@ -143,13 +164,13 @@
                         if (row) row.remove();
                     }
 
-                     // 🗣️ Speak announcement if action is Call
-                    if (action === 'CallForConsultation' && data.ticketNo && data.department) {
-                        const utterance = new SpeechSynthesisUtterance(`For Consultation: Patient ${data.ticketNo}, please proceed to ${data.department}`);
-                        utterance.lang = 'en-US';
-                        utterance.rate = 0.9;
-                        speechSynthesis.speak(utterance);
-                    }
+                    //  // 🗣️ Speak announcement if action is Call
+                    // if (action === 'CallForConsultation' && data.ticketNo && data.department) {
+                    //     const utterance = new SpeechSynthesisUtterance(`For Consultation: Patient ${data.ticketNo}, please proceed to ${data.department}`);
+                    //     utterance.lang = 'en-US';
+                    //     utterance.rate = 0.9;
+                    //     speechSynthesis.speak(utterance);
+                    // }
 
                     // ✅ Notify Public Display to refresh CONSULTATION TABLE only
                     connection.invoke("UpdateConsultation");

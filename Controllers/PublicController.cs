@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LMDH_QS.Hubs;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMDH_QS.Controllers
@@ -6,10 +8,12 @@ namespace LMDH_QS.Controllers
     public class PublicController : Controller
     {
         private readonly AppDbContext dbContext;
+        private readonly IHubContext<QueueHub> _hubContext;
 
-        public PublicController(AppDbContext dbContext)
+        public PublicController(AppDbContext dbContext, IHubContext<QueueHub> hubContext)
         {
             this.dbContext = dbContext;
+            this._hubContext = hubContext;
         }
 
         public IActionResult PublicDisplay()
@@ -35,7 +39,7 @@ namespace LMDH_QS.Controllers
             return PartialView("_QueueRows", queues); // or View()
         }
 
-        public IActionResult ConsultationQueueRows()
+        public async Task<IActionResult> ConsultationQueueRows()
         {
             var queues = dbContext.Queues
                 .Where(q => q.VisitDate.Date == DateTime.Today &&
@@ -43,6 +47,9 @@ namespace LMDH_QS.Controllers
                 .Take(10)
                 .OrderBy(q => q.QueueNumber)
                 .ToList();
+
+            await _hubContext.Clients.All.SendAsync("UpdateQueue");
+            await _hubContext.Clients.All.SendAsync("UpdateConsultationQueue");
 
             return PartialView("_ConsultationQueueRows", queues); // or View()
         }

@@ -554,10 +554,10 @@ C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\LMDH-QS.csproj.Up2Date
 C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\LMDH-QS.dll
 C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\refint\LMDH-QS.dll
 C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\LMDH-QS.pdb
 C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\LMDH-QS.genruntimeconfig.cache
 C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\ref\LMDH-QS.dll
+C:\Users\Arvin\Documents\lmdh_qs\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

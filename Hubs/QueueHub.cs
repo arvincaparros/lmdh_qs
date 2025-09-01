@@ -29,5 +29,11 @@ namespace LMDH_QS.Hubs
             await Clients.All.SendAsync("UpdatePreAssessmentQueue");
         }
 
+        public async Task CallPatient(string patientId, string patientName)
+        {
+            // 📢 Send data to all clients listening
+            await Clients.All.SendAsync("PatientCalled", patientId, patientName);
+        }
+
     }
 }

@@ -1,0 +1,22 @@
+﻿@model List<LMDH_QS.Models.Queue>
+
+
+@foreach (var record in Model)
+{
+    <tr>
+        <td>@record.VisitDate.ToString("MMM dd, yyyy")</td>
+        <td>@record.Department</td>
+        <td>@($"{record.DeptCode}{record.QueueNumber:D3}")</td>
+        <td>@record.PatientName</td>
+        <td>@record.Status</td>
+        <td>
+            <button class="btn btn-sm btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#viewDiagnosisModal"
+                    data-id="@record.PatientIdentification"
+                    data-visitdate="@record.VisitDate.ToString("yyyy-MM-dd")">
+                <i class="bi bi-eye"></i> View
+            </button>
+        </td>
+    </tr>
+}

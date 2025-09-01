@@ -1,0 +1,23 @@
+﻿@model IEnumerable<LMDH_QS.Models.Queue>
+
+<!-- MISSED QUEUE TABLE -->
+@foreach (var item in Model.Where(q => q.Status == "Missed Consultation"))
+{
+    var isoDate = item.VisitDate.ToString("yyyy-MM-ddTHH:mm:ss");
+
+    <tr id="missed-row-@item.Id" class="bg-secondary text-white">
+        <td>@item.Department</td>
+        <td>@item.VisitTime.ToString(@"hh\:mm")</td>
+        <td>@item.PatientName</td>
+        <td class="fw-bold">@($"{item.DeptCode}{item.QueueNumber:D3}")</td>
+        <td>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-warning btn-sm"
+                        onclick="updateStatus('@item.PatientIdentification', 'ConsultationStandby', '@isoDate', '@item.Department')">
+                    Back to Queue
+                </button>
+            </div>
+        </td>
+    </tr>
+}
+

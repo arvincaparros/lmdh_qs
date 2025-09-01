@@ -8,9 +8,11 @@ namespace LMDH_QS.Models
 
         public string PatientIdentification { get; set; } // FK to Queue
 
+        public string HistoryOfIllness { get; set; }
+
         public string Diagnosis { get; set; }
 
-        public string Prescription { get; set; }
+        public string Remarks { get; set; }
 
         public string? DoctorName { get; set; }
 
@@ -19,7 +21,19 @@ namespace LMDH_QS.Models
         public string PatientName { get; set; }
 
         public DateTime VisitDate { get; set; }
+
+        // --- NEW FIELDS ---
+        public DateTime? DischargeDate { get; set; }
+        public TimeSpan? DischargeTime { get; set; }
+
+        /// <summary>
+        /// Multiple dispositions can be selected, so we store as comma-separated string.
+        /// </summary>
+        public string? Disposition { get; set; }
+
     }
+
+
 
     //public class DoctorNote
     //{

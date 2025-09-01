@@ -33,7 +33,8 @@ namespace LMDH_QS.Controllers
                     new Claim(ClaimTypes.Name, user.Username),
                     new Claim(ClaimTypes.Role, user.Role),
                     new Claim("FirstName", user.FirstName),
-                    new Claim("FullName", $"{user.FirstName} {user.LastName}")
+                    new Claim("FullName", $"{user.FirstName} {user.LastName}"),
+                    new Claim("Department", user.Department ?? "")
                 };
 
                 var identity = new ClaimsIdentity(claims, "AppScheme");

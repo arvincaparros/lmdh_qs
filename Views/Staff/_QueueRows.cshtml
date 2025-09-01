@@ -1,47 +1,181 @@
 ﻿@model IEnumerable<LMDH_QS.Models.Queue>
 
-@foreach (var item in Model)
-{
-    <tr id="row-@item.Id"
-        class="@(item.Status == "Serving" ? "bg-warning text-dark"
-                    : item.Status == "Done" ? "bg-info text-dark"
-                    : item.Status == "Standby" ? "bg-success text-white"
-                    : item.Status == "Skipped" ? "bg-danger text-white"
-                    : "")">
 
-    <td>@item.Department</td>
-    <td>@item.VisitTime.ToString(@"hh\:mm")</td>
-    <td>@item.PatientName</td>
-    <td class="fw-bold">@($"{item.DeptCode}{item.QueueNumber:D3}")</td>
-    <td>
-        @if (item.Status != "Consultation" || item.Status != "Done" || item.Status != "Consultation Serving" || item.Status != "Consultation Missed")
-            {
-                var isoDate = item.VisitDate.ToString("yyyy-MM-ddTHH:mm:ss");
-
-                <div class="d-flex justify-content-center gap-2">
-                    @* 
-                        * Staff calls the next patient -> update text from call to repeat call -> bg color warning -> status serving  
-                        * kung wala ang patient pindutin ang Missed -> update status to 'Missed' -> show in Missed Table -> can click button Requeue to back in Queues
-                        * kung tapos na pindutin ang Next 
-                    *@
-                    <button class="btn btn-primary btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Call', '@isoDate', '@item.Department')">Call</button>
-
-                    @* Skip - skip patient if laboratory is release the next day -> Done status*@ 
-                    <button class="btn btn-danger btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Skip', '@isoDate', '@item.Department')">Skip</button>
-
-                    @* Standby - patient laboratory result is release within the day *@
-                    <button class="btn btn-success btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Standby', '@isoDate', '@item.Department')">Standby</button>
-
-                    @* Next - Done Pre-assessment -> update status to Done -> removed in Queue*@
-                    <button class="btn btn-dark btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Consultation', '@isoDate', '@item.Department')">Consultation</button>
-
-                    @* Missed - update status to 'Missed' -> show in Missed Table -> can click button Requeue to back in Queues *@
-                    <button class="btn btn-secondary btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Missed', '@isoDate', '@item.Department')">
-                        Missed
+    @foreach (var item in Model)
+    {
+        <tr id="row-@item.PatientIdentification"
+            data-id="@item.Id"
+            data-visitdate="@item.VisitDate.ToString("yyyy-MM-dd")"
+            data-department="@item.Department"
+            class="@(item.Status == "Serving" ? "bg-warning bg-opacity-50 text-dark"
+                : item.Status == "Done" ? "bg-info bg-opacity-50 text-dark"
+                : item.Status == "Standby" ? "bg-success bg-opacity-50 text-dark"
+                : item.Status == "Skipped" ? "bg-danger bg-opacity-50 text-dark"
+                : "")">
+            <td>@item.Department</td>
+            <td>@item.VisitTime.ToString(@"hh\:mm")</td>
+            <td>@item.PatientName</td>
+            <td class="fw-bold">@($"{item.DeptCode}{item.QueueNumber:D3}")</td>
+            <td>
+                @if (item.Status == "Serving")
+                {
+                    <button id="vitalBtn"
+                        class="btn btn-primary btn-sm " 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#vitalModal" 
+                        data-patient-id="@item.PatientIdentification"
+                        data-visitdate="@item.VisitDate.ToString("yyyy-MM-dd")">
+                        Input Vital Record
                     </button>
-                </div>
-            }
+                }
+            </td>
+        </tr>
+    }
+
+    <!-- ✅ Extra row for buttons -->
+    <tr>
+        <td colspan="5" class="text-end">
+            <div class="btn-group gap-2">
+                <button class="btn btn-primary btn-sm" onclick="updateTopPatient('Call')">Call</button>
+                <button class="btn btn-danger btn-sm" onclick="updateTopPatient('Skip')">Skip</button>
+                <button class="btn btn-success btn-sm" onclick="updateTopPatient('Standby')">Standby</button>
+                <button class="btn btn-dark btn-sm" onclick="updateTopPatient('Consultation')">Consultation</button>
+                <button class="btn btn-secondary btn-sm" onclick="updateTopPatient('Missed')">Missed</button>
+            </div>
         </td>
     </tr>
-}
 
+@* <!-- Vital Signs Modal -->
+<div class="modal fade" id="vitalModal" tabindex="-1" aria-labelledby="vitalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="vitalModalLabel">Input Vital Signs</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="vitalForm">
+                <input type="hidden" id="PatientId" name="PatientId" value="" />
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="bp" class="form-label">Blood Pressure (BP)</label>
+                        <input type="text" class="form-control" id="bp" name="BP" placeholder="e.g. 120/80" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cr" class="form-label">Cardiac Rate (CR)</label>
+                        <input type="number" class="form-control" id="cr" name="CR" placeholder="e.g. 75" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pr" class="form-label">Pulse Rate (PR)</label>
+                        <input type="number" class="form-control" id="pr" name="PR" placeholder="e.g. 72" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="temp" class="form-label">Temperature (°C)</label>
+                        <input type="number" step="0.1" class="form-control" id="temp" name="Temp" placeholder="e.g. 36.5" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="weight" class="form-label">Weight (kg)</label>
+                        <input type="number" step="0.1" class="form-control" id="weight" name="Weight" placeholder="e.g. 60" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+
+
+
+        </div>
+    </div>
+</div> *@
+
+
+@* @section Scripts {
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            console.log("TEST");
+
+             const modalEl = document.getElementById("vitalModal");
+             const patientIdInput = document.getElementById("PatientId");
+
+             // Kapag nag-click ng Input Vital Record button
+             document.querySelectorAll("[data-bs-target='#vitalModal']").forEach(btn => {
+                 btn.addEventListener("click", function () {
+                     const patientId = this.getAttribute("data-patient-id");
+                     console.log("👉 Clicked Input Vital Record. PatientId:", patientId);
+                     patientIdInput.value = patientId;
+                 });
+             });
+
+             modalEl.addEventListener("shown.bs.modal", function () {
+                 const form = document.getElementById("vitalForm");
+
+                 if (form && !form.dataset.listenerAdded) {
+                     form.addEventListener("submit", function (e) {
+                         e.preventDefault();
+                         console.log("👉 Submitting form...");
+
+                         const formData = new FormData(this);
+                         for (let [key, value] of formData.entries()) {
+                             console.log("   📌", key, "=", value);
+                         }
+
+                         fetch('/Staff/SaveVitalRecord', {
+                             method: 'POST',
+                             body: formData
+                         })
+                         .then(res => {
+                             console.log("👉 Raw response:", res);
+                             return res.json();
+                         })
+                         .then(data => {
+                             console.log("👉 Response JSON:", data);
+                             if (data.success) {
+                                 Swal.fire({
+                                     icon: 'success',
+                                     title: 'Saved!',
+                                     text: data.message
+                                 }).then(() => {
+                                     bootstrap.Modal.getInstance(modalEl).hide();
+                                     form.reset();
+                                 });
+                             } else {
+                                 Swal.fire({
+                                     icon: 'error',
+                                     title: 'Oops...',
+                                     text: data.message || 'Error saving data!'
+                                 });
+                             }
+                         })
+                         .catch(err => {
+                             console.error("❌ Fetch error:", err);
+                             Swal.fire({
+                                 icon: 'error',
+                                 title: 'Unexpected Error',
+                                 text: 'Something went wrong. Please try again.'
+                             });
+                         });
+
+                         
+                     });
+
+                     form.dataset.listenerAdded = "true";
+                 }
+             });
+
+              
+
+
+         });
+
+
+
+    </script>
+
+} *@

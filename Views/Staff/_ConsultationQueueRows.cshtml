@@ -2,41 +2,30 @@
 
 @foreach (var item in Model)
 {
-    <tr id="row-@item.Id"
-        class="@(item.Status == "Consultation Serving" ? "bg-warning text-dark"
-                : item.Status == "Consultation Standby" ? "bg-success text-white"
-                : item.Status == "Skipped" ? "bg-danger text-white"
-                : item.Status == "Done" ? "bg-info text-dark"
+    <tr id="row-@item.PatientIdentification"
+        data-id="@item.Id"
+        data-visitdate="@item.VisitDate.ToString("yyyy-MM-ddTHH:mm:ss")"
+        data-department="@item.Department"
+        class="@(item.Status == "Consultation Serving" ? "bg-warning bg-opacity-50 text-dark"
+                : item.Status == "Consultation Standby" ? "bg-success bg-opacity-50 text-dark"
+                : item.Status == "Skipped" ? "bg-danger bg-opacity-50 text-dark"
+                : item.Status == "Done" ? "bg-info bg-opacity-50 text-dark"
                 : "")">
 
-
-    <td>@item.Department</td>
-    <td>@item.VisitTime.ToString(@"hh\:mm")</td>
-    <td>@item.PatientName</td>
-    <td class="fw-bold">@($"{item.DeptCode}{item.QueueNumber:D3}")</td>
-    <td>
-        @if (item.Status == "Consultation Serving" || item.Status == "Consultation Missed" || item.Status == "Consultation Standby")
-            {
-                var isoDate = item.VisitDate.ToString("yyyy-MM-ddTHH:mm:ss");
-
-                <div class="d-flex justify-content-center gap-2">
-                    @* 
-                        * Staff calls the next patient -> update text from call to repeat call -> bg color warning -> status serving  
-                        * kung wala ang patient pindutin ang Missed -> update status to 'Missed' -> show in Missed Table -> can click button Requeue to back in Queues
-                        * kung tapos na pindutin ang Next 
-                    *@
-                    <button class="btn btn-primary btn-sm" onclick="updateStatus('@item.PatientIdentification', 'CallForConsultation', '@isoDate', '@item.Department')">Call</button>
-
-                    @* Next - Done Pre-assessment -> update status to Done -> removed in Queue*@
-                    <button class="btn btn-dark btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Done', '@isoDate', '@item.Department')">Done</button>
-
-                    @* Missed - update status to 'Missed' -> show in Missed Table -> can click button Requeue to back in Queues *@
-                    <button class="btn btn-secondary btn-sm" onclick="updateStatus('@item.PatientIdentification', 'Missed', '@isoDate', '@item.Department')">
-                        Missed
-                    </button>
-                </div>
-            }
-        </td>
+        <td>@item.Department</td>
+        <td>@item.VisitTime.ToString(@"hh\:mm")</td>
+        <td>@item.PatientName</td>
+        <td class="fw-bold">@($"{item.DeptCode}{item.QueueNumber:D3}")</td>
     </tr>
 }
 
+<!-- ✅ Extra row for buttons -->
+<tr>
+    <td colspan="5" class="text-end">
+        <div class="btn-group gap-2">
+            <button class="btn btn-success btn-sm" onclick="updateTopPatient('CallForConsultation')">Call</button>
+            <button class="btn btn-info btn-sm" onclick="updateTopPatient('Done')">Done</button>
+            <button class="btn btn-secondary btn-sm" onclick="updateTopPatient('MissedConsultation')">MissedConsultation</button>
+        </div>
+    </td>
+</tr>
