@@ -41,10 +41,27 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
+             @* <div class="mb-3">
                     <label for="address" class="form-label">Address (Tirahan)</label>
                     <input type="text" class="form-control" id="address" name="address" onchange="capitalizeFirstLetter(this)" required>
+                </div> *@
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="Barangay" class="form-label">Barangay</label>
+                        <input type="text" class="form-control" id="Barangay" name="Barangay" onchange="capitalizeFirstLetter(this)" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="City" class="form-label">City (Lungsod)</label>
+                        <input type="text" class="form-control" id="City" name="City" onchange="capitalizeFirstLetter(this)" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="Province" class="form-label">Province (Lalawigan)</label>
+                        <input type="text" class="form-control" id="Province" name="Province" onchange="capitalizeFirstLetter(this)" required>
+                    </div>
                 </div>
+
 
                 <div class="mb-3">
                     <label for="TelNumber" class="form-label">Tel No (Numero ng Telepono)</label>

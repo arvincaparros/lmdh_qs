@@ -230,24 +230,25 @@ namespace LMDH_QS.Controllers
         {
             var query = _dbContext.Queues.AsQueryable();
 
+            var userDept = User.Claims.FirstOrDefault(c => c.Type == "Department")?.Value;
+
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(q => q.PatientName.Contains(search));
+                query = query.Where(q => q.Department == userDept && q.PatientName.Contains(search));
             }
 
             if (date.HasValue)
             {
-                query = query.Where(q => q.VisitDate.Date == date.Value.Date);
+                query = query.Where(q => q.Department == userDept && q.VisitDate.Date == date.Value.Date);
             }
 
             var history = query
+                .Where(q => q.Status == "Done")
                 .OrderByDescending(q => q.VisitDate)
                 .ToList();
 
             return PartialView("_BacktrackTable", history);
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> GetDoctorNote(string patientId, DateTime visitDate)
@@ -299,9 +300,6 @@ namespace LMDH_QS.Controllers
                 });
             }
         }
-
-
-
 
     }
 }

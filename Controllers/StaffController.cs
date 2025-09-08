@@ -13,11 +13,13 @@ namespace LMDH_QS.Controllers
     {
         private readonly AppDbContext _dbContext;
         private readonly IHubContext<QueueHub> _hubContext;
+        private readonly ILogger<HomeController> _logger;
 
-        public StaffController(AppDbContext dbContext, IHubContext<QueueHub> hubContext)
+        public StaffController(AppDbContext dbContext, IHubContext<QueueHub> hubContext, ILogger<HomeController> logger)
         {
             _dbContext = dbContext;
             _hubContext = hubContext;
+            _logger = logger;
         }
 
         public IActionResult PreAssessment()
@@ -46,6 +48,7 @@ namespace LMDH_QS.Controllers
             var queues = _dbContext.Queues
                 .Where(q => q.VisitDate.Date == today &&
                        (q.Status == "Standby" || q.Status == "Serving"))
+                .Take(10)
                 .OrderBy(q => q.QueueNumber)
                 .ToList();
 
@@ -57,7 +60,9 @@ namespace LMDH_QS.Controllers
             var today = DateTime.Today;
             var queues = _dbContext.Queues
                 .Where(q => q.VisitDate.Date == today &&
-                       (q.Status == "Consultation Standby" || q.Status == "Consultation Serving"))
+                       q.Status == "Consultation Standby")
+                       //(q.Status == "Consultation Standby" || q.Status == "Consultation Serving"))
+                .Take(10)
                 .OrderBy(q => q.QueueNumber)
                 .ToList();
 
@@ -133,8 +138,14 @@ namespace LMDH_QS.Controllers
         [HttpPost]
         public async Task<IActionResult> Call([FromBody] QueueActionRequest request)
         {
+
+            _logger.LogInformation("Call action triggered with PatientId: {PatientId}, Department: {Department}, VisitDate: {VisitDate}",
+       request?.PatientIdentification, request?.Department, request?.VisitDate);
+
             try
             {
+                
+
                 if (request == null || string.IsNullOrEmpty(request.PatientIdentification)
                     || string.IsNullOrEmpty(request.Department) || request.VisitDate == default)
                 {
@@ -144,8 +155,8 @@ namespace LMDH_QS.Controllers
                 var queue = _dbContext.Queues.FirstOrDefault(q =>
                     q.PatientIdentification == request.PatientIdentification &&
                     q.Department == request.Department &&
-                    q.VisitDate >= DateTime.Now.Date &&
-                    q.Status == "Standby");
+                    q.VisitDate == DateTime.Now.Date &&
+                    (q.Status == "Standby" || q.Status == "Serving"));
 
                 if (queue == null)
                 {
@@ -213,7 +224,8 @@ namespace LMDH_QS.Controllers
                     q.PatientIdentification == request.PatientIdentification &&
                     q.VisitDate.Date == DateTime.Now.Date &&
                     q.Department == request.Department &&
-                    (q.Status == "Consultation Standby" || q.Status == "Consultation Serving"));
+                    q.Status == "Consultation Standby");
+                    //(q.Status == "Consultation Standby" || q.Status == "Consultation Serving"));
 
                 if (queue == null)
                 {

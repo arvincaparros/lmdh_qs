@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LMDH_QS.Models
 {
@@ -38,8 +39,21 @@ namespace LMDH_QS.Models
         public string LastName { get; set; }
 
         [Required]
-        [StringLength(200)]
-        public string Address { get; set; }
+        [StringLength(100)]
+        public string Barangay { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string City { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string Province { get; set; }
+
+        // Computed only, not stored in DB
+        [NotMapped]
+        [Display(Name = "Address")]
+        public string Address => $"{Barangay}, {City}, {Province}";
 
         [Required]
         [Display(Name = "Telephone Number")]
@@ -73,3 +87,5 @@ namespace LMDH_QS.Models
         public bool HasConsented { get; set; }
     }
 }
+
+

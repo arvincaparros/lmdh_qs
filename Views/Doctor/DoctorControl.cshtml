@@ -86,20 +86,6 @@
             <div class="card shadow-sm mt-3">
                 <div class="card-header bg-primary text-white text-center fw-semibold"> <i class="bi bi-archive me-2"></i> Backtrack Patient Records </div>
                 <div class="card-body">
-                  @*   <form method="get" class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <input type="text" name="search" class="form-control" 
-                                   value="@Context.Request.Query["search"].ToString()"
-                                   placeholder="Search by Name, Ticket No, or Dept..." />
-                        </div>
-                        <div class="col-md-4">
-                            <input type="date" name="date" class="form-control" 
-                                   value="@Context.Request.Query["date"].ToString()" />
-                        </div>
-                        <div class="col-md-2 d-grid">
-                            <button type="submit" class="btn btn-outline-primary">Search</button>
-                        </div>
-                    </form> *@
 
                    <form id="backtrackForm" class="row g-3 mb-3">
                         <div class="col-md-6">
@@ -114,11 +100,18 @@
                     </form>
 
                    
-                    
+                     <div>
+                        <!-- Hidden loading spinner -->
+                        <div id="loadingSpinner" style="display:none; text-align:center; margin-top:10px;">
+                            <img src="~/images/spinner.gif" alt="Loading..." width="40" />
+                            <p>Loading data...</p>
+                        </div>
+                    </div>
+
                     <table class="table table-bordered table-striped text-center align-middle">
                         <thead>
                             <tr>
-                                <th>Date</th>
+                                <th>Dateof Visit</th>
                                 <th>Department</th>
                                 <th>Ticket</th>
                                 <th>Patient</th>
@@ -127,14 +120,14 @@
                             </tr>
                         </thead>
                         <tbody id="backtrackTableContainer">
-                            @await Html.PartialAsync("_BacktrackTable", Model.History)
+                      @*       @await Html.PartialAsync("_BacktrackTable", Model.History) *@
+
                         </tbody>
+
+                       
                     </table>
-
-                    <div >
-                        
-                    </div>
-
+                         
+                   
                     
                 </div>
             </div>
@@ -404,22 +397,52 @@
         });
 
 
+       // $(document).ready(function () {
+       //      $("#backtrackForm").on("submit", function (e) {
+       //          e.preventDefault(); // 🔹 stop full page reload
+
+       //          $.get("/Doctor/BacktrackPartial", { 
+       //              search: $("#searchInput").val(), 
+       //              date: $("#dateInput").val() 
+       //          })
+       //          .done(function (data) {
+       //              $("#backtrackTableContainer").html(data); // update tbody only
+       //          })
+       //          .fail(function (xhr) {
+       //              alert("Error: " + xhr.status + " - " + xhr.statusText);
+       //          });
+       //      });
+       //  });
+
        $(document).ready(function () {
             $("#backtrackForm").on("submit", function (e) {
-                e.preventDefault(); // 🔹 stop full page reload
+                e.preventDefault();
 
-                $.get("/Doctor/BacktrackPartial", { 
-                    search: $("#searchInput").val(), 
-                    date: $("#dateInput").val() 
+                // Show spinner
+                $("#loadingSpinner").show();
+                $("#backtrackTableContainer").css("opacity", "0.5"); // fade effect
+
+                $.get("/Doctor/BacktrackPartial", {
+                    search: $("#searchInput").val(),
+                    date: $("#dateInput").val()
                 })
                 .done(function (data) {
-                    $("#backtrackTableContainer").html(data); // update tbody only
+                    $("#backtrackTableContainer").html(data);
+
+                    // Smooth fade-in
+                    $("#backtrackTableContainer").css("opacity", "1").hide().fadeIn(300);
                 })
                 .fail(function (xhr) {
                     alert("Error: " + xhr.status + " - " + xhr.statusText);
+                })
+                .always(function () {
+                    // Hide spinner after load
+                    $("#loadingSpinner").hide();
+                    $("#backtrackTableContainer").css("opacity", "1");
                 });
             });
         });
+
 
 
         @if (TempData["DoctorNoteSuccess"] != null)

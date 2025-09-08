@@ -1,8 +1,11 @@
-﻿using LMDH_QS.Hubs;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
+using LMDH_QS.Hubs;
 using LMDH_QS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 
 namespace LMDH_QS.Controllers
 {
@@ -10,12 +13,13 @@ namespace LMDH_QS.Controllers
     {
         private readonly AppDbContext dbContext;
         private readonly IHubContext<QueueHub> hubContext;
+        private readonly ILogger<HomeController> _logger;
 
-
-        public PatientRegistrationController(AppDbContext dbContext, IHubContext<QueueHub> hubContext)
+        public PatientRegistrationController(AppDbContext dbContext, IHubContext<QueueHub> hubContext, ILogger<HomeController> logger)
         {
             this.dbContext = dbContext;
             this.hubContext = hubContext;
+            _logger = logger;
         }
 
         public IActionResult PatientRegistrationForm()
@@ -223,7 +227,6 @@ namespace LMDH_QS.Controllers
         //        message = message
         //    });
         //}
-
 
 
     }

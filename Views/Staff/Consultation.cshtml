@@ -37,7 +37,7 @@
 
         </table>
 
-        <h5 class="mt-4">Missed Patients</h5>
+       @*  <h5 class="mt-4">Missed Patients</h5>
         <table class="table table-bordered table-striped">
             <thead class="table-secondary">
                 <tr>
@@ -50,7 +50,7 @@
             </thead>
             <tbody id="missedTable">
             </tbody>
-        </table>
+        </table> *@
     </div>
 </div>
 
@@ -185,7 +185,7 @@
                         });
                     }
 
-                    if (action === 'Done') {
+                    if (action === 'CallForConsultation') {
                         Swal.fire({
                             icon: 'success',
                             title: 'Patient Sent to Doctor',

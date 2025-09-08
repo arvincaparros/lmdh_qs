@@ -32,18 +32,35 @@
         </tr>
     }
 
+    @{
+        bool hasServing = Model.Any(m => m.Status == "Serving");
+    }
+
     <!-- ✅ Extra row for buttons -->
     <tr>
         <td colspan="5" class="text-end">
             <div class="btn-group gap-2">
                 <button class="btn btn-primary btn-sm" onclick="updateTopPatient('Call')">Call</button>
                 <button class="btn btn-danger btn-sm" onclick="updateTopPatient('Skip')">Skip</button>
+
+                @if (hasServing)
+                {
+                   @*  <button id="consultBtn" class="btn btn-dark btn-sm" onclick="updateTopPatient('Consultation')">
+                        Send for Consultation
+                    </button> *@
+                    <button id="consultBtn" class="btn btn-dark btn-sm">
+                        Send for Consultation
+                    </button>
+                }
+
                 <button class="btn btn-success btn-sm" onclick="updateTopPatient('Standby')">Standby</button>
-                <button class="btn btn-dark btn-sm" onclick="updateTopPatient('Consultation')">Consultation</button>
                 <button class="btn btn-secondary btn-sm" onclick="updateTopPatient('Missed')">Missed</button>
             </div>
         </td>
     </tr>
+
+
+
 
 @* <!-- Vital Signs Modal -->
 <div class="modal fade" id="vitalModal" tabindex="-1" aria-labelledby="vitalModalLabel" aria-hidden="true">

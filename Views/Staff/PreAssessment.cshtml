@@ -109,274 +109,263 @@
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 
-    <script>
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/queueHub")
-            .build();
+   <script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/queueHub")
+        .build();
 
-        // --- debounce to avoid request spam ---
-        let fetchQueueTimer, fetchMissedTimer;
+    // --- debounce to avoid request spam ---
+    let fetchQueueTimer, fetchMissedTimer;
 
-        function safeFetchQueue() {
-            clearTimeout(fetchQueueTimer);
-            fetchQueueTimer = setTimeout(fetchQueue, 400);
-        }
+    function safeFetchQueue() {
+        clearTimeout(fetchQueueTimer);
+        fetchQueueTimer = setTimeout(fetchQueue, 400);
+    }
 
-        function safeFetchMissedQueue() {
-            clearTimeout(fetchMissedTimer);
-            fetchMissedTimer = setTimeout(fetchMissedQueue, 400);
-        }
+    function safeFetchMissedQueue() {
+        clearTimeout(fetchMissedTimer);
+        fetchMissedTimer = setTimeout(fetchMissedQueue, 400);
+    }
 
-        // ✅ only refresh when hub says so
-        connection.on("UpdateQueue", () => {
-            // safeFetchQueue();
-            // safeFetchMissedQueue();
-            fetchQueue()
-            fetchMissedQueue()
-        });
+    // ✅ Track recorded patients (client memory)
+    const recordedPatients = new Set();
 
-        // Start SignalR
-        connection.start()
-            .then(() => {
-                console.log("✅ SignalR connected (Pre-assessment)");
-                fetchQueue();
-                fetchMissedQueue();
-            })
-            .catch(err => console.error("SignalR Error:", err));
+    // ✅ only refresh when hub says so
+    connection.on("UpdateQueue", () => {
+        fetchQueue()
+        fetchMissedQueue()
+    });
 
-        // --- Fetch helpers ---
-        async function fetchQueue() {
-            try {
-                const res = await fetch('/Staff/QueueRows');
-                if (!res.ok) throw new Error(res.statusText);
-                const html = await res.text();
-                document.getElementById('queueTable').innerHTML = html;
-            } catch (err) {
-                console.error("fetchQueue failed:", err);
-            }
-        }
+    // Start SignalR
+    connection.start()
+        .then(() => {
+            console.log("✅ SignalR connected (Pre-assessment)");
+            fetchQueue();
+            fetchMissedQueue();
+        })
+        .catch(err => console.error("SignalR Error:", err));
 
-        async function fetchMissedQueue() {
-            try {
-                const res = await fetch('/Staff/MissedList');
-                if (!res.ok) throw new Error(res.statusText);
-                const html = await res.text();
-                document.getElementById('missedTable').innerHTML = html;
-            } catch (err) {
-                console.error("fetchMissedQueue failed:", err);
-            }
-        }
+    // --- Fetch helpers ---
+    async function fetchQueue() {
+        try {
+            const res = await fetch('/Staff/QueueRows');
+            if (!res.ok) throw new Error(res.statusText);
+            const html = await res.text();
+            document.getElementById('queueTable').innerHTML = html;
 
-         function updateTopPatient(action) {
-            // Get the first row inside #queueTable but ignore the last one (buttons row)
-            let firstRow = document.querySelector("#queueTable tr:not(:last-child)");
-
-            if (!firstRow) {
-                Swal.fire("No patients", "There are no patients in the queue.", "info");
-                return;
-            }
-
-            // Extract details from data-* attributes
-            let patientId = firstRow.id.replace("row-", "");
-            let department = firstRow.getAttribute("data-department");
-            let visitDate = firstRow.getAttribute("data-visitdate");
-
-          
-            // Pass to updateStatus
-            updateStatus(patientId, action, visitDate, department);
-        }
-
-
-        // --- Status update ---
-        function updateStatus(patientId, action, visitDate, department) {
-            let safeDateStr = (visitDate || "").trim();
-
-            if (safeDateStr.includes(' ')) safeDateStr = safeDateStr.replace(' ', 'T');
-            if (safeDateStr.includes('.')) safeDateStr = safeDateStr.split('.')[0];
-
-            const rawDate = new Date(safeDateStr);
-            if (isNaN(rawDate.getTime())) {
-                console.error("❌ Invalid visitDate:", visitDate);
-                Swal.fire("Invalid Date", "The visit date is invalid or missing.", "error");
-                return;
-            }
-           
-            const formattedVisitDate = rawDate.toISOString().split("T")[0]; // sends only "2025-08-25"
-
-            if (action === 'Skip') {
-                Swal.fire({
-                    title: 'Confirm Skip?',
-                    text: "Skip if the patient goes to Laboratory/Referral and results release next day.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, Skip',
-                    cancelButtonText: 'Cancel',
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        sendStatusUpdate(patientId, action, formattedVisitDate, department);
-                    }
-                });
-            } else {
-
-                  // 🔍 Debug log
-                console.log("PatientId:", patientId);
-                console.log("Action:", action);
-                console.log("Department:", department);
-                console.log("VisitDate:", formattedVisitDate);
-
-                sendStatusUpdate(patientId, action, formattedVisitDate, department);
-            }
-        }
-
-        async function sendStatusUpdate(patientId, action, visitDate, department) {
-            try {
-                const res = await fetch(`/Staff/${action}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        PatientIdentification: patientId,
-                        VisitDate: visitDate,
-                        Department: department
-                    })
-                });
-
-                const data = await res.json().catch(() => null);
-                if (!res.ok || !data) throw new Error(data?.message || "Unknown server error");
-
-                if (data.success) {
-                    if (data.removeRow) {
-                        const row = document.getElementById(`row-${patientId}`);
-                        if (row) row.remove();
-                    }
-
-                    // if (action === 'Call' && data.ticketNo && data.department) {
-                    //     const utterance = new SpeechSynthesisUtterance(
-                    //         `For Pre-Assessment: Patient ${data.ticketNo}, please proceed to ${data.department}`
-                    //     );
-                    //     utterance.lang = 'en-US';
-                    //     utterance.rate = 0.9;
-                    //     speechSynthesis.speak(utterance);
-                    // }
-
-                    if (action === 'Skip') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Patient Skipped',
-                            text: 'The patient has been marked as skipped.',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    }
-
-                } else {
-                    Swal.fire("Failed", data?.message || "An error occurred.", "error");
-                }
-            } catch (err) {
-                console.error(`${action} failed:`, err);
-                Swal.fire("Error", err.message || "Something went wrong. Please try again.", "error");
-            }
-        }
-
-        //For Patient Vital Record
-        document.addEventListener("DOMContentLoaded", function () {
-
-             const modalEl = document.getElementById("vitalModal");
-             const patientIdInput = document.getElementById("PatientId");
-
-            document.addEventListener("click", function (e) {
-                const btn = e.target.closest("[data-bs-target='#vitalModal']");
+            // ✅ Re-apply "Vital Recorded" state
+            recordedPatients.forEach(pid => {
+                const btn = document.querySelector(`#row-${pid} #vitalBtn`);
                 if (btn) {
-                    const patientId = btn.getAttribute("data-patient-id");
-                    const visitDate = btn.getAttribute("data-visitdate");
-
-                    const patientIdInput = document.getElementById("PatientId");
-                    const visitDateInput = document.getElementById("VisitDate");
-
-                    if (patientIdInput) {
-                        patientIdInput.value = patientId;
-                        console.log("👉 Clicked Input Vital Record. PatientId:", patientId);
-                    }
-
-                    if (visitDateInput){
-                        visitDateInput.value = visitDate;
-                        console.log("👉 Clicked Input Vital Record. VisitDate:", visitDate);
-                    }
+                    btn.innerText = "Vital Recorded";
+                    btn.disabled = true;
+                    btn.classList.remove("btn-primary");
+                    btn.classList.add("btn-success");
                 }
             });
+        } catch (err) {
+            console.error("fetchQueue failed:", err);
+        }
+    }
 
+    async function fetchMissedQueue() {
+        try {
+            const res = await fetch('/Staff/MissedList');
+            if (!res.ok) throw new Error(res.statusText);
+            const html = await res.text();
+            document.getElementById('missedTable').innerHTML = html;
+        } catch (err) {
+            console.error("fetchMissedQueue failed:", err);
+        }
+    }
 
-             modalEl.addEventListener("shown.bs.modal", function () {
-                 const form = document.getElementById("vitalForm");
+    function updateTopPatient(action) {
+        let firstRow = document.querySelector("#queueTable tr:not(:last-child)");
+        if (!firstRow) {
+            Swal.fire("No patients", "There are no patients in the queue.", "info");
+            return;
+        }
+        let patientId = firstRow.id.replace("row-", "");
+        let department = firstRow.getAttribute("data-department");
+        let visitDate = firstRow.getAttribute("data-visitdate");
+        updateStatus(patientId, action, visitDate, department);
+    }
 
-                 if (form && !form.dataset.listenerAdded) {
-                     form.addEventListener("submit", function (e) {
-                         e.preventDefault();
-                         console.log("👉 Submitting form...");
+    // --- Status update ---
+    function updateStatus(patientId, action, visitDate, department) {
+        let safeDateStr = (visitDate || "").trim();
+        if (safeDateStr.includes(' ')) safeDateStr = safeDateStr.replace(' ', 'T');
+        if (safeDateStr.includes('.')) safeDateStr = safeDateStr.split('.')[0];
 
-                         const formData = new FormData(this);
-                         for (let [key, value] of formData.entries()) {
-                             console.log("   📌", key, "=", value);
-                         }
+        const rawDate = new Date(safeDateStr);
+        if (isNaN(rawDate.getTime())) {
+            console.error("❌ Invalid visitDate:", visitDate);
+            Swal.fire("Invalid Date", "The visit date is invalid or missing.", "error");
+            return;
+        }
 
-                         fetch('/Staff/SaveVitalRecord', {
-                             method: 'POST',
-                             body: formData,
-                             credentials: 'same-origin' // 🔑 send auth cookie
-                         })
-                         .then(res => {
-                             console.log("👉 Raw response:", res);
-                             return res.json();
-                         })
-                         .then(data => {
-                             console.log("👉 Response JSON:", data);
+        const formattedVisitDate = rawDate.toISOString().split("T")[0];
 
-                             if (data.success) {
-                                 Swal.fire({
-                                     icon: 'success',
-                                     title: 'Saved!',
-                                     text: data.message
-                                 }).then(() => {
-                                     bootstrap.Modal.getInstance(modalEl).hide();
-                                     form.reset
+        if (action === 'Skip') {
+            Swal.fire({
+                title: 'Confirm Skip?',
+                text: "Skip if the patient goes to Laboratory/Referral and results release next day.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Skip',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    sendStatusUpdate(patientId, action, formattedVisitDate, department);
+                }
+            });
+        } else {
+            console.log("PatientId:", patientId);
+            console.log("Action:", action);
+            console.log("Department:", department);
+            console.log("VisitDate:", formattedVisitDate);
+            sendStatusUpdate(patientId, action, formattedVisitDate, department);
+        }
+    }
 
-                                     const vitalBtn = document.getElementById("vitalBtn");
+    async function sendStatusUpdate(patientId, action, visitDate, department) {
+        try {
+            const res = await fetch(`/Staff/${action}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    PatientIdentification: patientId,
+                    VisitDate: visitDate,
+                    Department: department
+                })
+            });
 
-                                     if (vitalBtn) {
-                                        vitalBtn.innerText = "Vital Recorded";  // Change text
-                                        vitalBtn.disabled = true;                // Disable button
+            const data = await res.json().catch(() => null);
+            if (!res.ok || !data) throw new Error(data?.message || "Unknown server error");
+
+            if (data.success) {
+                if (data.removeRow) {
+                    const row = document.getElementById(`row-${patientId}`);
+                    if (row) row.remove();
+                }
+
+                if (action === 'Skip') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Patient Skipped',
+                        text: 'The patient has been marked as skipped.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }
+            } else {
+                Swal.fire("Failed", data?.message || "An error occurred.", "error");
+            }
+        } catch (err) {
+            console.error(`${action} failed:`, err);
+            Swal.fire("Error", err.message || "Something went wrong. Please try again.", "error");
+        }
+    }
+
+    //For Patient Vital Record
+    document.addEventListener("DOMContentLoaded", function () {
+        const modalEl = document.getElementById("vitalModal");
+
+        document.addEventListener("click", function (e) {
+            const btn = e.target.closest("[data-bs-target='#vitalModal']");
+            if (btn) {
+                const patientId = btn.getAttribute("data-patient-id");
+                const visitDate = btn.getAttribute("data-visitdate");
+                const patientIdInput = document.getElementById("PatientId");
+                const visitDateInput = document.getElementById("VisitDate");
+
+                if (patientIdInput) patientIdInput.value = patientId;
+                if (visitDateInput) visitDateInput.value = visitDate;
+            }
+        });
+
+        modalEl.addEventListener("shown.bs.modal", function () {
+            const form = document.getElementById("vitalForm");
+
+            if (form && !form.dataset.listenerAdded) {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+
+                    fetch('/Staff/SaveVitalRecord', {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'same-origin'
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Saved!',
+                                    text: data.message
+                                }).then(() => {
+                                    bootstrap.Modal.getInstance(modalEl).hide();
+                                    form.reset();
+
+                                    const patientId = document.getElementById("PatientId").value;
+                                    recordedPatients.add(patientId); // ✅ remember patient
+
+                                    const vitalBtn = document.getElementById("vitalBtn");
+                                    if (vitalBtn) {
+                                        vitalBtn.innerText = "Vital Recorded";
+                                        vitalBtn.disabled = true;
                                         vitalBtn.classList.remove("btn-primary");
-                                        vitalBtn.classList.add("btn-success");   // Optional: green button
-                                     }
-                                 });
-                             } else {
-                                 Swal.fire({
-                                     icon: 'error',
-                                     title: 'Oops...',
-                                     text: data.message || 'Error saving data!'
-                                 });
-                             }
-                         })
-                         .catch(err => {
-                             console.error("❌ Fetch error:", err);
-                             Swal.fire({
-                                 icon: 'error',
-                                 title: 'Unexpected Error',
-                                 text: 'Something went wrong. Please try again.'
-                             });
-                         });
+                                        vitalBtn.classList.add("btn-success");
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: data.message || 'Error saving data!'
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            console.error("❌ Fetch error:", err);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Unexpected Error',
+                                text: 'Something went wrong. Please try again.'
+                            });
+                        });
+                });
 
+                form.dataset.listenerAdded = "true";
+            }
+        });
+    });
 
-                     });
+    // ✅ Handle Consultation Button Click
+    document.addEventListener("click", function (e) {
+        const consultBtn = e.target.closest("#consultBtn");
+        if (!consultBtn) return;
 
-                     form.dataset.listenerAdded = "true";
-                 }
-             });
+        const firstRow = document.querySelector("#queueTable tr:not(:last-child)");
+        if (!firstRow) return;
+        const patientId = firstRow.id.replace("row-", "");
 
-         });
-       
-    </script>
+        if (!recordedPatients.has(patientId)) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Action Not Allowed',
+                text: 'Please record the patient\'s vital signs before sending for consultation.'
+            });
+            return;
+        }
+
+        updateTopPatient('Consultation');
+    });
+</script>
+
 
     
 }
