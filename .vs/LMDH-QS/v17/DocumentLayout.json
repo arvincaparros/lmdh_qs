@@ -119,8 +119,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-04T13:07:44.681Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -133,8 +132,7 @@
               "ViewState": "AgIAAB0AAAAAAAAAAAAAAC8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-08-26T07:28:55.534Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -146,8 +144,7 @@
               "RelativeToolTip": "Controllers\\AccountController.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-08T14:09:17.412Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-08T14:09:17.412Z"
             },
             {
               "$type": "Document",
@@ -159,8 +156,7 @@
               "RelativeToolTip": "Views\\Staff\\PreAssessment.cshtml",
               "ViewState": "AgIAAFgBAAAAAAAAAADwv14BAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-04T13:26:54.96Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-04T13:26:54.96Z"
             },
             {
               "$type": "Document",
@@ -185,8 +181,7 @@
               "RelativeToolTip": "Views\\Staff\\_ConsultationQueueRows.cshtml",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAABcAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-20T10:55:27.177Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-20T10:55:27.177Z"
             },
             {
               "$type": "Document",
@@ -198,8 +193,7 @@
               "RelativeToolTip": "Controllers\\DoctorController.cs",
               "ViewState": "AgIAAN8AAAAAAAAAAAAkwO8AAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-19T12:02:26.534Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-19T12:02:26.534Z"
             },
             {
               "$type": "Document",
@@ -211,8 +205,7 @@
               "RelativeToolTip": "Controllers\\HomeController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-06T13:58:40.173Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-06T13:58:40.173Z"
             },
             {
               "$type": "Document",
@@ -224,8 +217,7 @@
               "RelativeToolTip": "Controllers\\StaffController.cs",
               "ViewState": "AgIAAMEBAAAAAAAAAAAAwOIBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-05T00:31:10.501Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-05T00:31:10.501Z"
             },
             {
               "$type": "Document",
@@ -237,8 +229,7 @@
               "RelativeToolTip": "Views\\Staff\\_QueueRows.cshtml",
               "ViewState": "AgIAAB4AAAAAAAAAAAAAACkAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-24T08:16:34.311Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-24T08:16:34.311Z"
             },
             {
               "$type": "Document",
@@ -250,8 +241,7 @@
               "RelativeToolTip": "Views\\PatientRegistration\\PatientRegistrationForm.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-03T13:06:09.531Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-03T13:06:09.531Z"
             },
             {
               "$type": "Document",
@@ -263,8 +253,7 @@
               "RelativeToolTip": "Controllers\\PatientRegistrationController.cs",
               "ViewState": "AgIAAFEAAAAAAAAAAAAowIkAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-03T13:40:09.76Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-03T13:40:09.76Z"
             },
             {
               "$type": "Document",
@@ -276,8 +265,7 @@
               "RelativeToolTip": "Views\\Home\\PageSelector.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-06T11:59:53.771Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-06T11:59:53.771Z"
             },
             {
               "$type": "Document",
@@ -289,8 +277,7 @@
               "RelativeToolTip": "Views\\Doctor\\_BacktrackTable.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-01T12:22:18.545Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-01T12:22:18.545Z"
             },
             {
               "$type": "Document",
@@ -302,8 +289,7 @@
               "RelativeToolTip": "Views\\Doctor\\DoctorControl.cshtml",
               "ViewState": "AgIAAF0AAAAAAAAAAAAswHQAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-03T11:33:16.684Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-03T11:33:16.684Z"
             },
             {
               "$type": "Document",
@@ -327,8 +313,7 @@
               "RelativeToolTip": "Models\\DoctorNote.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-01T05:12:54.305Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-01T05:12:54.305Z"
             },
             {
               "$type": "Document",
@@ -352,8 +337,7 @@
               "RelativeToolTip": "Models\\PatientVitalRecord.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAAwBAAAABHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-31T11:30:12.411Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-31T11:30:12.411Z"
             },
             {
               "$type": "Document",
@@ -377,8 +361,7 @@
               "RelativeToolTip": "Models\\QueueActionRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-25T11:01:45.171Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-25T11:01:45.171Z"
             },
             {
               "$type": "Document",
@@ -402,8 +385,7 @@
               "RelativeToolTip": "Controllers\\PublicController.cs",
               "ViewState": "AgIAACMAAAAAAAAAAAAgwC4AAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-03T07:49:02.759Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-03T07:49:02.759Z"
             },
             {
               "$type": "Document",
