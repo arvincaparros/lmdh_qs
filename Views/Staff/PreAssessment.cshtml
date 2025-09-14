@@ -75,6 +75,7 @@
                     <div class="mb-3">
                         <label for="bp" class="form-label">Blood Pressure (BP)</label>
                         <input type="text" class="form-control" id="bp" name="BP" placeholder="e.g. 120/80" required>
+                        <span id="bpError" class="text-danger" style="display:none;">Please enter blood pressure in the format e.g. 120/80</span>
                     </div>
                     <div class="mb-3">
                         <label for="cr" class="form-label">Cardiac Rate (CR)</label>
@@ -269,6 +270,7 @@
         }
     }
 
+
     //For Patient Vital Record
     document.addEventListener("DOMContentLoaded", function () {
         const modalEl = document.getElementById("vitalModal");
@@ -292,6 +294,23 @@
             if (form && !form.dataset.listenerAdded) {
                 form.addEventListener("submit", function (e) {
                     e.preventDefault();
+
+                    // ✅ BP validation
+                    const bpInput = document.getElementById("bp");
+                    let bpValue = bpInput.value.trim();
+                    const bpError = document.getElementById("bpError");
+
+                    // Simple check: must contain "/"
+                    // You can make it stricter with regex: /^\d{2,3}\/\d{2,3}$/
+                    if (!/^\d{2,3}\/\d{2,3}$/.test(bpValue)) {
+                        bpError.style.display = "block";
+                        bpInput.classList.add("is-invalid");
+                        return; // stop fetch submission
+                    } else {
+                        bpError.style.display = "none";
+                        bpInput.classList.remove("is-invalid");
+                    }
+
                     const formData = new FormData(this);
 
                     fetch('/Staff/SaveVitalRecord', {
@@ -343,6 +362,7 @@
             }
         });
     });
+
 
     // ✅ Handle Consultation Button Click
     document.addEventListener("click", function (e) {

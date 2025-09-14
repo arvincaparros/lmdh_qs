@@ -7,6 +7,18 @@
       "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|c:\\users\\arvin\\documents\\lmdh_qs\\views\\staff\\preassessment.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:views\\staff\\preassessment.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|c:\\users\\arvin\\documents\\lmdh_qs\\controllers\\patientregistrationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:controllers\\patientregistrationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|c:\\users\\arvin\\documents\\lmdh_qs\\views\\patientregistration\\patientregistrationform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:views\\patientregistration\\patientregistrationform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|c:\\users\\arvin\\documents\\lmdh_qs\\controllers\\doctorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:controllers\\doctorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -19,10 +31,6 @@
       "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|c:\\users\\arvin\\documents\\lmdh_qs\\views\\staff\\preassessment.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:views\\staff\\preassessment.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|c:\\users\\arvin\\documents\\lmdh_qs\\controllers\\staffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:controllers\\staffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -33,14 +41,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|c:\\users\\arvin\\documents\\lmdh_qs\\views\\staff\\_queuerows.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:views\\staff\\_queuerows.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|c:\\users\\arvin\\documents\\lmdh_qs\\views\\patientregistration\\patientregistrationform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:views\\patientregistration\\patientregistrationform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|c:\\users\\arvin\\documents\\lmdh_qs\\controllers\\patientregistrationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|solutionrelative:controllers\\patientregistrationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{96CF97E6-CC94-4C0F-9EEE-5611D18B7E70}|LMDH-QS.csproj|c:\\users\\arvin\\documents\\lmdh_qs\\views\\home\\pageselector.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -137,6 +137,70 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "PatientRegistrationController.cs",
+              "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Controllers\\PatientRegistrationController.cs",
+              "RelativeDocumentMoniker": "Controllers\\PatientRegistrationController.cs",
+              "ToolTip": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Controllers\\PatientRegistrationController.cs",
+              "RelativeToolTip": "Controllers\\PatientRegistrationController.cs",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAowH8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-03T13:40:09.76Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PreAssessment.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\Staff\\PreAssessment.cshtml",
+              "RelativeDocumentMoniker": "Views\\Staff\\PreAssessment.cshtml",
+              "ToolTip": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\Staff\\PreAssessment.cshtml",
+              "RelativeToolTip": "Views\\Staff\\PreAssessment.cshtml",
+              "ViewState": "AgIAAD0AAAAAAAAAAADwv04AAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-04T13:26:54.96Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-09-07T05:14:50.568Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "PatientRegistrationForm.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\PatientRegistration\\PatientRegistrationForm.cshtml",
+              "RelativeDocumentMoniker": "Views\\PatientRegistration\\PatientRegistrationForm.cshtml",
+              "ToolTip": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\PatientRegistration\\PatientRegistrationForm.cshtml",
+              "RelativeToolTip": "Views\\PatientRegistration\\PatientRegistrationForm.cshtml",
+              "ViewState": "AgIAAKIAAAAAAAAAAAAAALgAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-03T13:06:09.531Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "_ConsultationQueueRows.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\Staff\\_ConsultationQueueRows.cshtml",
+              "RelativeDocumentMoniker": "Views\\Staff\\_ConsultationQueueRows.cshtml",
+              "ToolTip": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\Staff\\_ConsultationQueueRows.cshtml",
+              "RelativeToolTip": "Views\\Staff\\_ConsultationQueueRows.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABcAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-20T10:55:27.177Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "Controllers\\AccountController.cs",
@@ -149,43 +213,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "PreAssessment.cshtml",
-              "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\Staff\\PreAssessment.cshtml",
-              "RelativeDocumentMoniker": "Views\\Staff\\PreAssessment.cshtml",
-              "ToolTip": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\Staff\\PreAssessment.cshtml",
-              "RelativeToolTip": "Views\\Staff\\PreAssessment.cshtml",
-              "ViewState": "AgIAAFgBAAAAAAAAAADwv14BAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-04T13:26:54.96Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-09-07T05:14:50.568Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "_ConsultationQueueRows.cshtml",
-              "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\Staff\\_ConsultationQueueRows.cshtml",
-              "RelativeDocumentMoniker": "Views\\Staff\\_ConsultationQueueRows.cshtml",
-              "ToolTip": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\Staff\\_ConsultationQueueRows.cshtml",
-              "RelativeToolTip": "Views\\Staff\\_ConsultationQueueRows.cshtml",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABcAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-20T10:55:27.177Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "DoctorController.cs",
               "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Controllers\\DoctorController.cs",
               "RelativeDocumentMoniker": "Controllers\\DoctorController.cs",
@@ -197,7 +224,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
@@ -209,7 +236,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "StaffController.cs",
               "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Controllers\\StaffController.cs",
               "RelativeDocumentMoniker": "Controllers\\StaffController.cs",
@@ -221,7 +248,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "_QueueRows.cshtml",
               "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\Staff\\_QueueRows.cshtml",
               "RelativeDocumentMoniker": "Views\\Staff\\_QueueRows.cshtml",
@@ -230,30 +257,6 @@
               "ViewState": "AgIAAB4AAAAAAAAAAAAAACkAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-08-24T08:16:34.311Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "PatientRegistrationForm.cshtml",
-              "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\PatientRegistration\\PatientRegistrationForm.cshtml",
-              "RelativeDocumentMoniker": "Views\\PatientRegistration\\PatientRegistrationForm.cshtml",
-              "ToolTip": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Views\\PatientRegistration\\PatientRegistrationForm.cshtml",
-              "RelativeToolTip": "Views\\PatientRegistration\\PatientRegistrationForm.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-03T13:06:09.531Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "PatientRegistrationController.cs",
-              "DocumentMoniker": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Controllers\\PatientRegistrationController.cs",
-              "RelativeDocumentMoniker": "Controllers\\PatientRegistrationController.cs",
-              "ToolTip": "C:\\Users\\Arvin\\Documents\\lmdh_qs\\Controllers\\PatientRegistrationController.cs",
-              "RelativeToolTip": "Controllers\\PatientRegistrationController.cs",
-              "ViewState": "AgIAAFEAAAAAAAAAAAAowIkAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-03T13:40:09.76Z"
             },
             {
               "$type": "Document",
